@@ -1,0 +1,7 @@
+require 'rubygems'
+
+task :spec do
+  system "spec -cfp spec"
+end
+
+task :default => :spec
