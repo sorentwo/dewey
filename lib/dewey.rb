@@ -1,8 +1,8 @@
 require 'uri'
 require 'net/https'
 require 'open-uri'
+require 'rexml/document'
 require 'tempfile'
-require 'xmlsimple'
 require 'dewey/https'
 require 'dewey/mime'
 require 'dewey/utils'
@@ -219,11 +219,11 @@ module Dewey
       base
     end
     
-    def extract_rid(body) #:nodoc:
-      hash = XmlSimple.xml_in(body)
+    def extract_rid(source) #:nodoc:
+      xml = REXML::Document.new(source)
       
       begin
-        "#{$1}:#{$2}" if hash['id'].first =~ /.+(document|spreadsheet|presentation)%3A([0-9a-zA-Z]+)/
+        "#{$1}:#{$2}" if xml.elements['//id'].text =~ /.+(document|spreadsheet|presentation)%3A([0-9a-zA-Z]+)/
       rescue 
         raise DeweyException, "id could not be extracted from: #{body}"
       end

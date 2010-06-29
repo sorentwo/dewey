@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'dewey'
-  s.version     = '0.1.1'
+  s.version     = '0.1.2'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Parker Selbert"]
   s.email       = ["parker@sorentwo.com"]
@@ -11,9 +11,10 @@ Gem::Specification.new do |s|
   s.description = "Dewey is a no-frills tool for utilizing Google Docs ability to convert documents between formats"
 
   s.required_rubygems_version = ">= 1.3.6"
+  s.rubyforge_project         = "dewey"
 
-  s.add_development_dependency "xmlsimple"
+  s.add_development_dependency "rspec"
 
-  s.files        = Dir.glob("{lib}/**/*") + %w(LICENSE README.md CHANGELOG.md TODO.md)
+  s.files        = Dir.glob("{lib}/**/*") + %w(README.md CHANGELOG.md TODO.md)
   s.require_path = 'lib'
 end

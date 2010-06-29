@@ -1,3 +1,10 @@
+## 0.1.2 (June 28, 2010)
+
+Features:
+
+  - Removed dependency on xmlsimple. Processing was so minimal it was pointless.
+  
+---
 ## 0.1.1 (June 28, 2010)
 
 Bugfixes:
