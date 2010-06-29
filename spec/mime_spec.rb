@@ -8,36 +8,36 @@ describe Dewey::Mime do
       @pdf = sample_file 'sample_document.pdf'
       @rtf = sample_file 'sample_document.rtf'
       
-      Dewey::Mime.mime_type(@doc).should == 'application/msword'
-      Dewey::Mime.mime_type(@pdf).should == 'application/pdf'
-      Dewey::Mime.mime_type(@rtf).should == 'application/rtf'
+      Dewey::Mime.mime_type(@doc).should eql('application/msword')
+      Dewey::Mime.mime_type(@pdf).should eql('application/pdf')
+      Dewey::Mime.mime_type(@rtf).should eql('application/rtf')
     end
     
     it "should provide the correct spreadsheet mime type" do
       @xls = sample_file 'sample_spreadsheet.xls'
       @csv = sample_file 'sample_spreadsheet.csv'
       
-      Dewey::Mime.mime_type(@xls).should == 'application/vnd.ms-excel'
-      Dewey::Mime.mime_type(@csv).should == 'text/csv'
+      Dewey::Mime.mime_type(@xls).should eql('application/vnd.ms-excel')
+      Dewey::Mime.mime_type(@csv).should eql('text/csv')
     end
     
     it "should provide the correct presentation mime type" do
       @ppt = sample_file 'sample_presentation.ppt'
       
-      Dewey::Mime.mime_type(@ppt).should == 'application/vnd.ms-powerpoint'
+      Dewey::Mime.mime_type(@ppt).should eql('application/vnd.ms-powerpoint')
     end
     
     it "should be coerced problematic mime types" do
       @docx = sample_file 'sample_document.docx'
       
-      Dewey::Mime.mime_type(@docx).should == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      Dewey::Mime.mime_type(@docx).should eql('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     end
   end
   
   describe "Guessing the service from a mime type" do    
     it "should correctly guess service when given a known type" do
-      Dewey::Mime.guess_service('application/msword').should == :document
-      Dewey::Mime.guess_service('application/vnd.ms-powerpoint').should == :presentation
+      Dewey::Mime.guess_service('application/msword').should eql(:document)
+      Dewey::Mime.guess_service('application/vnd.ms-powerpoint').should eql(:presentation)
     end
     
     it "should return nil for an unknown type" do
