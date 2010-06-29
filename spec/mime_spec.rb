@@ -27,10 +27,16 @@ describe Dewey::Mime do
       Dewey::Mime.mime_type(@ppt).should eql('application/vnd.ms-powerpoint')
     end
     
-    it "should be coerced problematic mime types" do
+    it "should coerce problematic mime types" do
       @docx = sample_file 'sample_document.docx'
       
       Dewey::Mime.mime_type(@docx).should eql('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    end
+    
+    it "should correctly guess from a file without an extension" do
+      @noext = sample_file 'sample_document'
+      
+      Dewey::Mime.mime_type(@noext).should eql('application/msword')
     end
   end
   

@@ -36,7 +36,7 @@ module Dewey
     # types, when gathered from +file+ require extra coercion and will be handled
     # automatically.
     def self.mime_type(file)
-      type = (file.path.match(/\.(\w+)/)[1]).downcase
+      type = (file.path.match(/\.(\w+)/)[1] rescue '').downcase
       case type
       when /csv/  then SPREADSHEET_MIMETYPES[:csv]
       when /doc$/ then DOCUMENT_MIMETYPES[:doc]
