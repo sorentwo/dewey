@@ -1,14 +1,8 @@
-# (c) Copyright 2010 Parker Selbert <parker@sorentwo.com>
-#
-# Dewey is freely distributable under the terms of an MIT-style license.
-# See LICENSE or http://www.opensource.org/licenses/mit-license.php
-
 require 'uri'
 require 'net/https'
 require 'open-uri'
 require 'tempfile'
 require 'xmlsimple'
-
 require 'dewey/https'
 require 'dewey/mime'
 require 'dewey/utils'

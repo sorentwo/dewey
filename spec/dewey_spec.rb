@@ -1,8 +1,9 @@
 require 'spec_helper'
+require 'yaml'
 
 describe Dewey::Document do  
   before :all do
-    @credentials = YAML.load_file('dewey.yml').symbolize_keys
+    @credentials = YAML.load_file(File.expand_path('../dewey.yml', __FILE__)).each {}
   end
   
   describe "Validation - Checking upload and export file formats" do
@@ -41,7 +42,7 @@ describe Dewey::Document do
   
   describe "Authorization - Requesting an auth token" do
     before do
-      @dewey = Dewey::Document.new(:account => @credentials[:email], :password => @credentials[:password])
+      @dewey = Dewey::Document.new(:account => @credentials['email'], :password => @credentials['password'])
     end
     
     it "should raise if authorization is attempted with no certs" do
@@ -72,7 +73,7 @@ describe Dewey::Document do
   
   describe "File operations" do
     before(:all) do
-      @dewey = Dewey::Document.new(:account => @credentials[:email], :password => @credentials[:password])
+      @dewey = Dewey::Document.new(:account => @credentials['email'], :password => @credentials['password'])
       @dewey.authorize!
     end
   
@@ -115,8 +116,6 @@ describe Dewey::Document do
       it "should accept a known resource id to delete" do
         @dewey.delete(@rid).should be_true
       end
-    
-      it "should accept a file name to delete"
     end
   
     describe "Downloading files" do    
