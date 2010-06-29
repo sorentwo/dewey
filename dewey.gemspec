@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'dewey'
-  s.version     = '0.1.0'
+  s.version     = '0.1.1'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Parker Selbert"]
   s.email       = ["parker@sorentwo.com"]
