@@ -1,3 +1,2 @@
-*._*
-*.DS_Store
+*.gem
 spec/dewey.yml
