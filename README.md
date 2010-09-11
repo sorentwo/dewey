@@ -1,11 +1,21 @@
-Dewey allows you to simply upload, download and delete files from your Google
-Docs account. Let Google do all of the hard work of converting your documents!
+    :::::::::  :::::::::: :::       ::: :::::::::: :::   ::: 
+    :+:    :+: :+:        :+:       :+: :+:        :+:   :+: 
+    +:+    +:+ +:+        +:+       +:+ +:+         +:+ +:+  
+    +#+    +:+ +#++:++#   +#+  +:+  +#+ +#++:++#     +#++:   
+    +#+    +#+ +#+        +#+ +#+#+ +#+ +#+           +#+    
+    #+#    #+# #+#         #+#+# #+#+#  #+#           #+#    
+    #########  ##########   ###   ###   ##########    ###
 
-# Note
+Dewey allows you to simply upload, download and delete files from your Google
+Docs account.
+
+Let Google do all of the hard work of converting your documents!
+
+## Note
 
 Dewey is in alpha. It is not recommended you use this in production code.
 
-## Usage
+## Getting Started
 
 First, create a new Dewey::Document instance using your google docs account and
 password.
