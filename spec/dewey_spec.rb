@@ -105,12 +105,20 @@ describe Dewey::Document do
         @dewey.cached.should_not be_empty
         @dewey.cached['sample_document'].should_not be_nil
       end
+      
+      # It is often the case on OS X that TextEdit or Pages has made a .doc file.
+      # In these cases a mime type won't be accurately determined and we should
+      # let Google do the hard work.
+      it "should upload a document with no Content-Type when necessary" do
+        @bad = sample_file 'bad_mimetype'
+        lambda { @dewey.upload(@bad) }.should_not raise_exception(Dewey::DeweyException)
+      end
     end
   
     describe "Deleting files" do
       before do      
-        @doc = sample_file 'sample_document.txt'
-        @rid = @dewey.upload(@doc)
+        @txt = sample_file 'sample_document.txt'
+        @rid = @dewey.upload(@txt)
       end
     
       it "should accept a known resource id to delete" do
@@ -120,14 +128,14 @@ describe Dewey::Document do
   
     describe "Downloading files" do    
       it "should be able to download from a known resource id" do
-        doc = sample_file 'sample_document.txt'
+        txt = sample_file 'sample_document.txt'
         spr = sample_file 'sample_spreadsheet.xls'
         
-        docid = @dewey.upload(doc)
+        txtid = @dewey.upload(txt)
         sprid = @dewey.upload(spr)
-        @dewey.download(docid, :doc).should be_kind_of(Tempfile)
+        @dewey.download(txtid, :doc).should be_kind_of(Tempfile)
         @dewey.download(sprid, :csv).should be_kind_of(Tempfile)
-        @dewey.delete(docid)
+        @dewey.delete(txtid)
         @dewey.delete(sprid)
       end
     end

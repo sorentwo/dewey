@@ -105,7 +105,11 @@ module Dewey
         raise DeweyException, "Unexpected response: #{response}"
       end
     end
-        
+    
+    # Upload a file to the account. A successful upload will return the resource
+    # id, which is useful for downloading the file without doing a title search.
+    # * file  - A File reference
+    # * title - An alternative title, to be used instead of the filename
     def upload(file, title = nil)
       extension = File.extname(file.path).sub('.', '')
       basename  = File.basename(file.path, ".#{extension}")
@@ -118,8 +122,8 @@ module Dewey
       
       headers = base_headers
       headers['Content-Length'] = File.size?(file).to_s
-      headers['Content-Type']   = mimetype
       headers['Slug']           = Dewey::Utils.escape(title)
+      headers['Content-Type']   = mimetype unless mimetype =~ /Can't expand summary_info/
       
       # Rewind the file in the case of multiple uploads, or conversions
       file.rewind

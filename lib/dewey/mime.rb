@@ -63,8 +63,8 @@ module Dewey
     # cast them to one that Google Docs will accept.
     def self.coerce(mime_type)
       case mime_type
-      when /vnd.ms-office/ then 'application/msword'
-      when /x-docx/        then 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      when /vnd.ms-office/       then 'application/msword'
+      when /x-docx/              then 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       else mime_type
       end
     end
