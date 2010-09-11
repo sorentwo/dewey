@@ -1,3 +1,9 @@
+## 0.1.3 (June 29, 2010)
+
+Bugfixes:
+
+  - Handle mime type changes for files with no extension
+
 ## 0.1.2 (June 28, 2010)
 
 Features:
