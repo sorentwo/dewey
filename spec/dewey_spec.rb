@@ -6,40 +6,6 @@ describe Dewey::Document do
     @credentials = YAML.load_file(File.expand_path('../dewey.yml', __FILE__)).each {}
   end
   
-  describe "Validation - Checking upload and export file formats" do
-    it "should return true for valid upload formats" do
-      Dewey::Document.valid_upload_format?('txt', :document).should be_true
-      Dewey::Document.valid_upload_format?('ppt', :presentation).should be_true
-      Dewey::Document.valid_upload_format?('csv', :spreadsheet).should be_true
-    end
-    
-    it "should return false for invalid upload formats" do
-      Dewey::Document.valid_upload_format?('png', :document).should_not be_true
-      Dewey::Document.valid_upload_format?('txt', :presentation).should_not be_true
-      Dewey::Document.valid_upload_format?('pdf', :spreadsheet).should_not be_true
-    end
-    
-    it "should raise when given an invalid upload service" do
-      lambda { Dewey::Document.valid_upload_format?('ical', :cl) }.should raise_exception(Dewey::DeweyException)
-    end
-    
-    it "should return true for valid export formats" do
-      Dewey::Document.valid_export_format?('txt', :document).should be_true
-      Dewey::Document.valid_export_format?('pdf', :presentation).should be_true
-      Dewey::Document.valid_export_format?('csv', :spreadsheet).should be_true
-    end
-    
-    it "should return false for invalid export formats" do
-      Dewey::Document.valid_export_format?('jpg', :document).should be_false
-      Dewey::Document.valid_export_format?('txt', :presentation).should be_false
-      Dewey::Document.valid_export_format?('txt', :spreadsheet).should be_false
-    end
-    
-    it "should raise when given an invalid export service" do
-      lambda { Dewey::Document.valid_export_format?('ical', :cl) }.should raise_exception(Dewey::DeweyException)
-    end
-  end
-  
   describe "Authorization - Requesting an auth token" do
     before do
       @dewey = Dewey::Document.new(:account => @credentials['email'], :password => @credentials['password'])
