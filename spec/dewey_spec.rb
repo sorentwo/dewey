@@ -44,17 +44,22 @@ describe Dewey::Document do
     end
   
     describe "Uploading files" do
-      before do
+      before(:all) do
+        @png = sample_file 'invalid_type.png'
         @doc = sample_file 'sample_document.txt'
-        @pre = sample_file 'sample_presentation.ppt'
+        # @pre = sample_file 'sample_presentation.ppt'
         @spr = sample_file 'sample_spreadsheet.xls'
+        @bad = sample_file 'bad_mimetype'
       end
     
-      it "should raise when attempting to upload unsupported file types" do
-        png = sample_file 'invalid_type.png'
-        lambda { @dewey.upload(png) }.should raise_exception(Dewey::DeweyException)
+      it "should raise when uploading unsupported file types" do
+        lambda { @dewey.upload(@png) }.should raise_exception(Dewey::DeweyException)
       end
-    
+      
+      it "should raise when uploading a document with a bad mimetype" do
+        lambda { @dewey.upload(@bad) }.should raise_exception(Dewey::DeweyException)
+      end
+      
       it "should be able to upload" do
         @dewey.upload(@doc).should_not be_nil
         # @dewey.upload(@pre).should_not be_nil
@@ -65,44 +70,45 @@ describe Dewey::Document do
         @dewey.upload(@doc).should match(/document:[0-9a-zA-Z]+/)
         @dewey.upload(@spr).should match(/spreadsheet:[0-9a-zA-Z]+/)
       end
-    
-      it "should update the cache when upload is successful" do      
-        @dewey.upload(@doc)
-        @dewey.cached.should_not be_empty
-        @dewey.cached['sample_document'].should_not be_nil
-      end
-      
-      # It is often the case on OS X that TextEdit or Pages has made a .doc file.
-      # In these cases a mime type won't be accurately determined and we should
-      # let Google do the hard work.
-      it "should upload a document with no Content-Type when necessary" do
-        @bad = sample_file 'bad_mimetype'
-        lambda { @dewey.upload(@bad) }.should_not raise_exception(Dewey::DeweyException)
-      end
     end
   
     describe "Deleting files" do
-      before do      
-        @txt = sample_file 'sample_document.txt'
-        @rid = @dewey.upload(@txt)
+      before(:each) do
+        txt = sample_file 'sample_document.txt'
+        spr = sample_file 'sample_spreadsheet.xls'
+        @txtid = @dewey.upload(txt)
+        @sprid = @dewey.upload(spr)
       end
-    
+      
       it "should accept a known resource id to delete" do
-        @dewey.delete(@rid).should be_true
+        @dewey.delete(@txtid).should be_true
+        @dewey.delete(@sprid).should be_true
       end
     end
   
-    describe "Downloading files" do    
-      it "should be able to download from a known resource id" do
+    describe "Downloading files" do
+      before(:all) do
         txt = sample_file 'sample_document.txt'
         spr = sample_file 'sample_spreadsheet.xls'
-        
-        txtid = @dewey.upload(txt)
-        sprid = @dewey.upload(spr)
-        @dewey.download(txtid, :doc).should be_kind_of(Tempfile)
-        @dewey.download(sprid, :csv).should be_kind_of(Tempfile)
-        @dewey.delete(txtid)
-        @dewey.delete(sprid)
+        @txtid = @dewey.upload(txt)
+        @sprid = @dewey.upload(spr)
+      end
+      
+      after(:all) do
+        @dewey.delete(@txtid)
+        @dewey.delete(@sprid)
+      end
+      
+      it "should be able to download from a known resource id" do
+        @dewey.download(@txtid, :doc).should be_kind_of(Tempfile)
+        @dewey.download(@sprid, :csv).should be_kind_of(Tempfile)
+      end
+      
+      it "should be able to download the same file repeatably" do
+        2.times do
+          @dewey.download(@txtid, :doc).should_not be_nil
+          @dewey.download(@sprid, :csv).should_not be_nil
+        end
       end
     end
   end
