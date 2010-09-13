@@ -1,7 +1,7 @@
 require 'net/http'
 
-# Shortcut method for using +http.use_ssl+.
-module Net
+module Net # :nodoc:
+  # Shortcut method for using +http.use_ssl+.
   class HTTPS < Net::HTTP
     def initialize(address, port = 443)
       super(address, port)

@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'spec'
-# require 'artifice'
+require 'rspec'
+require 'mocha'
 
 require File.dirname(__FILE__) + '/../lib/dewey'
 

@@ -2,12 +2,12 @@ require 'spec_helper'
 require 'yaml'
 
 describe Dewey::Document do  
-  before :all do
+  before(:all) do
     @credentials = YAML.load_file(File.expand_path('../dewey.yml', __FILE__)).each {}
   end
   
   describe "Authorization - Requesting an auth token" do
-    before do
+    before(:each) do
       @dewey = Dewey::Document.new(:account => @credentials['email'], :password => @credentials['password'])
     end
     
