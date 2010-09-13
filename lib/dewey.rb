@@ -9,20 +9,13 @@ require 'dewey/utils'
 require 'dewey/validation'
 
 module Dewey
-  GOOGLE_BASE_URL  = "https://www.google.com"
   GOOGLE_DOCS_URL  = "https://docs.google.com"
   GOOGLE_SPRD_URL  = "https://spreadsheets.google.com"
-  GOOGLE_LOGIN_URL = GOOGLE_BASE_URL + "/accounts/ClientLogin"
-  GOOGLE_FEED_URL  = GOOGLE_DOCS_URL + "/feeds/default/private/full"
+  GOOGLE_LOGIN_URL = "https://www.google.com/accounts/ClientLogin"
   
+  GOOGLE_FEED_URL        = GOOGLE_DOCS_URL + "/feeds/default/private/full"
   GOOGLE_DOCUMENT_URL    = GOOGLE_DOCS_URL + "/feeds/download/documents/Export"
   GOOGLE_SPREADSHEET_URL = GOOGLE_SPRD_URL + "/feeds/download/spreadsheets/Export"
-  
-  GOOGLE_SERVICES = { :document => 'writely', :spreadsheet => 'wise' }
-  
-  DOCUMENT_EXPORT_FORMATS     = %w(txt odt pdf html rtf doc png zip)
-  PRESENTATION_EXPORT_FORMATS = %w(swf pdf png ppt)
-  SPREADSHEET_EXPORT_FORMATS  = %W(xls csv pdf ods tsv html)
   
   class DeweyException < Exception
   end
@@ -31,7 +24,7 @@ module Dewey
   # This base class handles authentication and requests
   #
   class Document
-    attr_accessor :account, :password, :service, :token, :cached
+    attr_accessor :account, :password, :token
     
     # Create a new Doc object
     # Options specified in +opts+ consist of:
@@ -39,12 +32,9 @@ module Dewey
     # * :account - The Google Doc's account that will be used for authentication.
     #   This will most typically be a gmail account, i.e. +example@gmail.com+
     # * :password - The password for the Google Doc's account.
-    # * :service - The default service to connect to, either :document or :spreadsheet
     def initialize(options = {})
       @account  = options[:account]
       @password = options[:password]
-      @service  = options[:service] || :document
-      @cached   = {}
     end
     
     # Returns true if this instance has been authorized
@@ -62,7 +52,7 @@ module Dewey
       
       url = URI.parse(GOOGLE_LOGIN_URL)
       params = { 'accountType' => 'HOSTED_OR_GOOGLE', 'Email' => @account,
-                 'Passwd' => @password, 'service'=> GOOGLE_SERVICES[@service] }
+                 'Passwd' => @password, 'service'=> 'writely' }
       
       response = Net::HTTPS.post_form(url, params)
       
@@ -81,7 +71,7 @@ module Dewey
     # id, which is useful for downloading the file without doing a title search.
     # * file  - A File reference
     # * title - An alternative title, to be used instead of the filename
-    def upload(file, title = nil)
+    def put(file, title = nil)
       extension = File.extname(file.path).sub('.', '')
       basename  = File.basename(file.path, ".#{extension}")
       mimetype  = Dewey::Mime.mime_type(file)
@@ -103,19 +93,22 @@ module Dewey
       
       case response
       when Net::HTTPCreated
-        rid = @cached[basename] = extract_rid(response.body)
+        extract_rid(response.body)
       else
         nil
       end
     end
     
+    alias :upload :put
+    
     # Download, or export more accurately, a file to a specified format
     # * id     - A resource id or exact file name matching a document in the account
     # * format - The output format, see *_EXPORT_FORMATS for possiblibilites
-    def download(id, format = nil)
+    def get(id, format = nil)
       spreadsheet = !! id.match(/spreadsheet/)
       
-      url  = (spreadsheet ? GOOGLE_SPREADSHEET_URL : GOOGLE_DOCUMENT_URL)
+      url  = ''
+      url << (spreadsheet ? GOOGLE_SPREADSHEET_URL : GOOGLE_DOCUMENT_URL)
       url << (spreadsheet ? "?key=#{id}" : "?docID=#{id}")
       url << "&exportFormat=#{format.to_s}" unless format.nil?
       
@@ -129,7 +122,10 @@ module Dewey
       file
     end
     
+    alias :download :get
+    
     # Deletes a document referenced either by resource id or by name.
+    # * id - A resource id or exact file name matching a document in the account
     def delete(id)
       headers = base_headers
       headers['If-Match'] = '*' # We don't care if others have modified
