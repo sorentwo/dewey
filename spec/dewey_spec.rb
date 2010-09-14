@@ -40,9 +40,8 @@ describe Dewey::Document do
   describe "File operations" do
     before(:all) do
       @dewey = Dewey::Document.new(:account => @credentials['email'], :password => @credentials['password'])
-      @dewey.authorize!
     end
-  
+    
     describe "Uploading files" do
       before(:all) do
         @png = sample_file 'invalid_type.png'
@@ -69,6 +68,11 @@ describe Dewey::Document do
       it "should return a resource id" do
         @dewey.upload(@doc).should match(/document:[0-9a-zA-Z]+/)
         @dewey.upload(@spr).should match(/spreadsheet:[0-9a-zA-Z]+/)
+      end
+      
+      it "should authorize automatically" do
+        @dewey.upload(@doc)
+        @dewey.token.should_not be_nil
       end
     end
   

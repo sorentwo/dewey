@@ -72,6 +72,8 @@ module Dewey
     # * file  - A File reference
     # * title - An alternative title, to be used instead of the filename
     def put(file, title = nil)
+      authorize! unless authorized?
+      
       extension = File.extname(file.path).sub('.', '')
       basename  = File.basename(file.path, ".#{extension}")
       mimetype  = Dewey::Mime.mime_type(file)
@@ -105,6 +107,8 @@ module Dewey
     # * id     - A resource id or exact file name matching a document in the account
     # * format - The output format, see *_EXPORT_FORMATS for possiblibilites
     def get(id, format = nil)
+      authorize! unless authorized?
+      
       spreadsheet = !! id.match(/spreadsheet/)
       
       url  = ''
@@ -127,6 +131,8 @@ module Dewey
     # Deletes a document referenced either by resource id or by name.
     # * id - A resource id or exact file name matching a document in the account
     def delete(id)
+      authorize! unless authorized?
+      
       headers = base_headers
       headers['If-Match'] = '*' # We don't care if others have modified
       
