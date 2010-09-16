@@ -195,13 +195,13 @@ module Dewey
       base
     end
     
-    def extract_rid(source) #:nodoc:
-      xml = REXML::Document.new(source)
+    def extract_rid(response) #:nodoc:
+      xml = REXML::Document.new(response)
       
       begin
-        "#{$1}:#{$2}" if xml.elements['//id'].text =~ /.+(document|spreadsheet|presentation)%3A([0-9a-zA-Z]+)/
+        "#{$1}:#{$2}" if xml.elements['//id'].text =~ /.+(document|spreadsheet|presentation)%3A([0-9a-zA-Z_-]+)$/
       rescue 
-        raise DeweyException, "id could not be extracted from: #{body}"
+        raise DeweyException, "id could not be extracted from: #{response}"
       end
     end
   end
