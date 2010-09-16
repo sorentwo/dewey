@@ -173,9 +173,8 @@ module Dewey
     
     def http_request(method, url, headers, data = nil) #:nodoc:      
       url = URI.parse(url) if url.kind_of? String
-      
-      connection = Net::HTTP.new(url.host, url.port)
-      connection.use_ssl = (url.scheme == 'https')
+
+      connection = (url.scheme == 'https') ? Net::HTTPS.new(url.host, url.port) : Net::HTTP.new(url.host, url.port)
       
       case method
       when :post
