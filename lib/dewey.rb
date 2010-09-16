@@ -104,12 +104,13 @@ module Dewey
     alias :upload :put
     
     # Download, or export more accurately, a file to a specified format
-    # * id     - A resource id or exact file name matching a document in the account
+    # * rid    - A resource id, for example +document:12345+
     # * format - The output format, see *_EXPORT_FORMATS for possiblibilites
-    def get(id, format = nil)
+    def get(rid, format = nil)
       authorize! unless authorized?
       
-      spreadsheet = !! id.match(/spreadsheet/)
+      spreadsheet = !! rid.match(/^spreadsheet/)
+      id = rid.sub(/[a-z]+:/, '')
       
       url  = ''
       url << (spreadsheet ? GOOGLE_SPREADSHEET_URL : GOOGLE_DOCUMENT_URL)
@@ -118,7 +119,7 @@ module Dewey
       
       headers = base_headers
       
-      file = Tempfile.new([id, format].join('.'))
+      file = Tempfile.new([rid, format].join('.'))
       file.binmode
       
       open(url, headers) { |data| file.write data.read }
