@@ -31,7 +31,6 @@ describe Dewey::Document do
     end
     
     it "should store the authorization token on success" do
-      @dewey.token.should be_nil
       @dewey.authorize!
       @dewey.token.should_not be_nil
     end
@@ -45,10 +44,14 @@ describe Dewey::Document do
     describe "Uploading files" do
       before(:all) do
         @png = sample_file 'invalid_type.png'
-        @doc = sample_file 'sample_document.txt'
+        @txt = sample_file 'sample_document.txt'
         # @pre = sample_file 'sample_presentation.ppt'
         @spr = sample_file 'sample_spreadsheet.xls'
         @bad = sample_file 'bad_mimetype'
+      end
+      
+      after(:all) do
+        [@png, @txt, @spr, @bad].map(&:close)
       end
     
       it "should raise when uploading unsupported file types" do
@@ -60,28 +63,32 @@ describe Dewey::Document do
       end
       
       it "should be able to upload" do
-        @dewey.upload(@doc).should_not be_nil
+        @dewey.upload(@txt).should_not be_nil
         # @dewey.upload(@pre).should_not be_nil
         @dewey.upload(@spr).should_not be_nil
       end
       
       it "should return a resource id" do
-        @dewey.upload(@doc).should match(/document:[0-9a-zA-Z]+/)
+        @dewey.upload(@txt).should match(/document:[0-9a-zA-Z]+/)
         @dewey.upload(@spr).should match(/spreadsheet:[0-9a-zA-Z]+/)
       end
       
       it "should authorize automatically" do
-        @dewey.upload(@doc)
+        @dewey.upload(@txt)
         @dewey.token.should_not be_nil
       end
     end
   
     describe "Deleting files" do
       before(:each) do
-        txt = sample_file 'sample_document.txt'
-        spr = sample_file 'sample_spreadsheet.xls'
-        @txtid = @dewey.upload(txt)
-        @sprid = @dewey.upload(spr)
+        @txt = sample_file 'sample_document.txt'
+        @spr = sample_file 'sample_spreadsheet.xls'
+        @txtid = @dewey.upload(@txt)
+        @sprid = @dewey.upload(@spr)
+      end
+      
+      after(:each) do
+        [@txt, @spr].map(&:close)
       end
       
       it "should accept a known resource id to delete" do
@@ -92,13 +99,14 @@ describe Dewey::Document do
   
     describe "Downloading files" do
       before(:all) do
-        txt = sample_file 'sample_document.txt'
-        spr = sample_file 'sample_spreadsheet.xls'
-        @txtid = @dewey.upload(txt)
-        @sprid = @dewey.upload(spr)
+        @txt = sample_file 'sample_document.txt'
+        @spr = sample_file 'sample_spreadsheet.xls'
+        @txtid = @dewey.upload(@txt)
+        @sprid = @dewey.upload(@spr)
       end
       
       after(:all) do
+        [@txt, @spr].map(&:close)
         @dewey.delete(@txtid)
         @dewey.delete(@sprid)
       end
