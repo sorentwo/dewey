@@ -9,7 +9,7 @@ module Dewey
     
     module_function :escape
     
-    # Return the bytesize of String; uses String#length under Ruby 1.8 and
+    # Return the bytesize of String; uses String#length under Ruby 1.8
      def bytesize(string)
        string.bytesize
      end
