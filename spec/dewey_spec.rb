@@ -103,27 +103,27 @@ describe Dewey::Document do
       end
     end
   
-    describe "#get" do
-      before(:all) do
-        @txt = sample_file 'sample_document.txt'
-        @spr = sample_file 'sample_spreadsheet.xls'
-        @txtid = @dewey.upload(@txt)
-        @sprid = @dewey.upload(@spr)
+    describe "#get" do      
+      it "should be able to download a document" do
+        stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
+          to_return(:body => sample_file('sample_document.doc'))
+        
+        @dewey.get('document:12345', :doc).should be_kind_of(Tempfile)
       end
       
-      after(:all) do
-        [@txt, @spr].map(&:close)
+      it "should be able to download a spreadsheet" do
+        stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv").
+          to_return(:body => sample_file('sample_spreadsheet.csv'))
+        
+        @dewey.get('spreadsheet:12345', :csv).should be_kind_of(Tempfile)
       end
       
-      it "should be able to download from a known resource id" do
-        @dewey.get(@txtid, :doc).should be_kind_of(Tempfile)
-        @dewey.get(@sprid, :csv).should be_kind_of(Tempfile)
-      end
-      
-      it "should be able to download the same file repeatably" do
+      it "should be able to download the same document repeatedly" do
+        stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
+          to_return(:body => sample_file('sample_document.doc'))
+        
         2.times do
-          @dewey.get(@txtid, :doc).should_not be_nil
-          @dewey.get(@sprid, :csv).should_not be_nil
+          @dewey.get('document:12345', :doc).should be_kind_of(Tempfile)
         end
       end
     end
