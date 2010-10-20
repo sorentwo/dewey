@@ -1,14 +1,10 @@
 require 'spec_helper'
 require 'yaml'
 
-describe Dewey::Document do  
-  before(:all) do
-    @credentials = YAML.load_file(File.expand_path('../dewey.yml', __FILE__)).each {}
-  end
-  
+describe Dewey::Document do
   describe "Authorization - Requesting an auth token" do
     before(:each) do
-      @dewey = Dewey::Document.new(:account => @credentials['email'], :password => @credentials['password'])
+      @dewey = Dewey::Document.new(:account => 'dewey', :password => 'password')
     end
     
     it "should raise if authorization is attempted with no certs" do
@@ -22,7 +18,8 @@ describe Dewey::Document do
     end
     
     it "should return true if authorization is successful" do
-      stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL)
+      stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).
+        with(:body => 'accountType=HOSTED_OR_GOOGLE&Email=dewey&Passwd=password&service=writely')
       
       @dewey.authorize!.should be_true
     end
