@@ -97,7 +97,7 @@ module Dewey
       when Net::HTTPCreated
         extract_rid(response.body)
       else
-        nil
+        false
       end
     end
     

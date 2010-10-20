@@ -97,20 +97,9 @@ describe Dewey::Document do
     end
   
     describe "#delete" do
-      before(:each) do
-        @txt = sample_file 'sample_document.txt'
-        @spr = sample_file 'sample_spreadsheet.xls'
-        @txtid = @dewey.upload(@txt)
-        @sprid = @dewey.upload(@spr)
-      end
-      
-      after(:each) do
-        [@txt, @spr].map(&:close)
-      end
-      
-      it "should accept a known resource id to delete" do
-        @dewey.delete(@txtid).should be_true
-        @dewey.delete(@sprid).should be_true
+      it "should delete a resource from an id" do
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345")
+        @dewey.delete('document:12345').should be_true
       end
     end
   
@@ -127,14 +116,14 @@ describe Dewey::Document do
       end
       
       it "should be able to download from a known resource id" do
-        @dewey.download(@txtid, :doc).should be_kind_of(Tempfile)
-        @dewey.download(@sprid, :csv).should be_kind_of(Tempfile)
+        @dewey.get(@txtid, :doc).should be_kind_of(Tempfile)
+        @dewey.get(@sprid, :csv).should be_kind_of(Tempfile)
       end
       
       it "should be able to download the same file repeatably" do
         2.times do
-          @dewey.download(@txtid, :doc).should_not be_nil
-          @dewey.download(@sprid, :csv).should_not be_nil
+          @dewey.get(@txtid, :doc).should_not be_nil
+          @dewey.get(@sprid, :csv).should_not be_nil
         end
       end
     end
