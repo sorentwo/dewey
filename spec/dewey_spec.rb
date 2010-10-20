@@ -22,30 +22,49 @@ describe Dewey::Document do
     end
     
     it "should return true if authorization is successful" do
+      stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL)
+      
       @dewey.authorize!.should be_true
     end
     
     it "should return false if authorization fails" do
+      stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:status => 403)
+      
       @dewey.password = 'mangled'
       @dewey.authorize!.should be_false
     end
     
     it "should store the authorization token on success" do
+      stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
+      
       @dewey.authorize!
-      @dewey.token.should_not be_nil
+      @dewey.token.should eq('12345')
     end
   end
   
-  describe "File operations" do
-    before(:all) do
-      @dewey = Dewey::Document.new(:account => @credentials['email'], :password => @credentials['password'])
+  describe "Automatic Authorization" do
+    before(:each) do
+      @dewey = Dewey::Document.new
+      @dewey.stub(:authorize!).and_return(true)
+      stub_request(:post, Dewey::GOOGLE_FEED_URL)
     end
     
-    describe "Uploading files" do
+    it "should automatically authorize when required" do
+      @dewey.should_receive(:authorize!)
+      @dewey.put(sample_file('sample_document.txt'))
+    end
+  end
+  
+  describe "File Operations" do
+    before(:each) do
+      @dewey = Dewey::Document.new
+      @dewey.stub(:authorized?).and_return(true)
+    end
+    
+    describe "#put" do
       before(:all) do
         @png = sample_file 'invalid_type.png'
         @txt = sample_file 'sample_document.txt'
-        # @pre = sample_file 'sample_presentation.ppt'
         @spr = sample_file 'sample_spreadsheet.xls'
         @bad = sample_file 'bad_mimetype'
       end
@@ -55,31 +74,29 @@ describe Dewey::Document do
       end
     
       it "should raise when uploading unsupported file types" do
-        lambda { @dewey.upload(@png) }.should raise_exception(Dewey::DeweyException)
+        lambda { @dewey.put(@png) }.should raise_exception(Dewey::DeweyException)
       end
       
       it "should raise when uploading a document with a bad mimetype" do
-        lambda { @dewey.upload(@bad) }.should raise_exception(Dewey::DeweyException)
+        lambda { @dewey.put(@bad) }.should raise_exception(Dewey::DeweyException)
+      end
+
+      it "get a resource id after putting a document" do
+        stub_request(:post, Dewey::GOOGLE_FEED_URL).
+          to_return(:status => 201, :body => "<fake><id>document%3A12345</id></fake>")
+        
+        @dewey.put(@txt).should eq('document:12345')
       end
       
-      it "should be able to upload" do
-        @dewey.upload(@txt).should_not be_nil
-        # @dewey.upload(@pre).should_not be_nil
-        @dewey.upload(@spr).should_not be_nil
-      end
-      
-      it "should return a resource id" do
-        @dewey.upload(@txt).should match(/document:[0-9a-zA-Z]+/)
-        @dewey.upload(@spr).should match(/spreadsheet:[0-9a-zA-Z]+/)
-      end
-      
-      it "should authorize automatically" do
-        @dewey.upload(@txt)
-        @dewey.token.should_not be_nil
+      it "get a resource id after putting a spreadsheet" do
+        stub_request(:post, Dewey::GOOGLE_FEED_URL).
+          to_return(:status => 201, :body => "<fake><id>spreadsheet%3A12345</id></fake>")
+          
+        @dewey.put(@spr).should eq('spreadsheet:12345')
       end
     end
   
-    describe "Deleting files" do
+    describe "#delete" do
       before(:each) do
         @txt = sample_file 'sample_document.txt'
         @spr = sample_file 'sample_spreadsheet.xls'
@@ -97,7 +114,7 @@ describe Dewey::Document do
       end
     end
   
-    describe "Downloading files" do
+    describe "#get" do
       before(:all) do
         @txt = sample_file 'sample_document.txt'
         @spr = sample_file 'sample_spreadsheet.xls'
@@ -107,8 +124,6 @@ describe Dewey::Document do
       
       after(:all) do
         [@txt, @spr].map(&:close)
-        @dewey.delete(@txtid)
-        @dewey.delete(@sprid)
       end
       
       it "should be able to download from a known resource id" do

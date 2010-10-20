@@ -58,7 +58,7 @@ module Dewey
       
       case response
       when Net::HTTPSuccess
-        @token = response.body.split(/=/).last
+        @token = response.body.split('=').last
         true
       when Net::HTTPForbidden
         false
@@ -200,7 +200,7 @@ module Dewey
       xml = REXML::Document.new(response)
       
       begin
-        "#{$1}:#{$2}" if xml.elements['//id'].text =~ /.+(document|spreadsheet|presentation)%3A([0-9a-zA-Z_-]+)$/
+        "#{$1}:#{$2}" if xml.elements['//id'].text =~ /.*(document|spreadsheet|presentation)%3A([0-9a-zA-Z_-]+)$/
       rescue 
         raise DeweyException, "id could not be extracted from: #{response}"
       end
