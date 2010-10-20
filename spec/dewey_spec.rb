@@ -25,7 +25,9 @@ describe Dewey::Document do
     end
     
     it "should return false if authorization fails" do
-      stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:status => 403)
+      stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).
+        with(:body => 'accountType=HOSTED_OR_GOOGLE&Email=dewey&Passwd=mangled&service=writely').
+        to_return(:status => 403)
       
       @dewey.password = 'mangled'
       @dewey.authorize!.should be_false
@@ -122,6 +124,21 @@ describe Dewey::Document do
         2.times do
           @dewey.get('document:12345', :doc).should be_kind_of(Tempfile)
         end
+      end
+    end
+    
+    describe "#convert" do
+      before(:each) do
+        @txt = sample_file 'sample_document.txt'
+        @doc = sample_file 'sample_document.doc'
+        @dewey.stub(:authorize!).and_return(true, true, true)
+      end
+      
+      it "should put, get, and delete" do
+        @dewey.should_receive(:put).with(@txt, 'sample').and_return('document:12345')
+        @dewey.should_receive(:get).with('document:12345', :doc).and_return(@doc)
+        @dewey.should_receive(:delete).with('document:12345').and_return(true)
+        @dewey.convert(@txt, :title => 'sample', :format => :doc).should be(@doc)
       end
     end
   end

@@ -148,14 +148,15 @@ module Dewey
       end
     end
     
-    # Convenience method for +upload+, +download+, +delete+. Returns a Tempfile
-    # with in the provided type.
+    # Convenience method for +put+, +get+, +delete+. Returns a Tempfile
+    # with in the provided type. Note that if you omit the format option it will
+    # simply upload the file and return it.
     # * file    - The file that will be converted
     # * options - Takes :title and :format. See +upload+ for title, and +download+
     #             for format.
     def convert(file, options = {})
-      rid = upload(file, options[:title])
-      con = download(rid, options[:format])
+      rid = put(file, options[:title])
+      con = get(rid, options[:format])
       
       delete(rid)
       
