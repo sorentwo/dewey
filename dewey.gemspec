@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'dewey'
-  s.version     = '0.1.4'
+  s.version     = Dewey::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Parker Selbert"]
   s.email       = ["parker@sorentwo.com"]
@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rspec"
 
-  s.files        = Dir.glob("{lib}/**/*") + %w(README.md CHANGELOG.md TODO.md)
+  s.files        = Dir.glob("{lib}/**/*") + %w(README.md CHANGELOG.md)
   s.require_path = 'lib'
 end
