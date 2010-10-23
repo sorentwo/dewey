@@ -1,4 +1,6 @@
 # -*- encoding: utf-8 -*-
+$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
+require "dewey/version"
 
 Gem::Specification.new do |s|
   s.name        = 'dewey'
