@@ -5,49 +5,8 @@ require 'rexml/document'
 require 'tempfile'
 
 module Dewey
-  class Document
-    attr_accessor :account, :password, :token
-  
-    # Options specified in +opts+ consist of:
-    #
-    # * :account - The Google Doc's account that will be used for authentication.
-    #   This will most typically be a gmail account, i.e. +example@gmail.com+
-    # * :password - The password for the Google Doc's account.
-    def initialize(options = {})
-      @account  = options[:account]
-      @password = options[:password]
-    end
-  
-    # Returns true if this instance has been authorized
-    def authorized?
-      !! @token
-    end
-  
-    # Gets an authorization token for this instance. Raises an error if no
-    # credentials have been provided, +false+ if authorization fails, and +true+ if
-    # authorization is successful.
-    def authorize!
-      if @account.nil? || @password.nil?
-        raise DeweyException, "Account or password missing."
-      end
-    
-      url = URI.parse(GOOGLE_LOGIN_URL)
-      params = { 'accountType' => 'HOSTED_OR_GOOGLE', 'Email' => @account,
-                 'Passwd' => @password, 'service'=> 'writely' }
-    
-      response = Net::HTTPS.post_form(url, params)
-    
-      case response
-      when Net::HTTPSuccess
-        @token = response.body.split('=').last
-        true
-      when Net::HTTPForbidden
-        false
-      else
-        raise DeweyException, "Unexpected response: #{response}"
-      end
-    end
-  
+  class Core
+
     # Upload a file to the account. A successful upload will return the resource
     # id, which is useful for downloading the file without doing a title search.
     # * file  - A File reference
