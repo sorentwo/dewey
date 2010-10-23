@@ -1,18 +1,18 @@
 module Dewey
   class ClientAuth
-    attr_reader :authorizations
+    attr_reader :authentications
 
     def initialize(email, password) 
       @email          = email
       @password       = password
-      @authorizations = {}
+      @authentications = {}
     end
 
-    def authorized?
-      @authorizations.any? 
+    def authenticated?
+      @authentications.any? 
     end
 
-    def authorize!(service = nil)
+    def authenticate!(service = nil)
       service ||= :writely
 
 
@@ -27,7 +27,7 @@ module Dewey
 
       case response
       when Net::HTTPSuccess
-        @authorizations[service] = response.body.split('=').last
+        @authentications[service] = response.body.split('=').last
         true
       when Net::HTTPForbidden
         false

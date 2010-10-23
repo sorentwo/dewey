@@ -5,14 +5,28 @@ require 'rexml/document'
 require 'tempfile'
 
 module Dewey
-  
   class << self
+    def authentication(strategy, options)
+      case strategy
+      when :client
+        @@authenticator = Dewey::ClientAuth.new(options[:email], options[:password])
+      end
+    end
+    
+    def authenticated?
+      !@@authenticator.nil? && @@authenticator.authenticated?
+    end
+    
+    def authenticate!
+      @@authenticator.authenticate!
+    end
+    
     # Upload a file to the account. A successful upload will return the resource
     # id, which is useful for downloading the file without doing a title search.
     # * file  - A File reference
     # * title - An alternative title, to be used instead of the filename
     def put(file, title = nil)
-      authorize! unless authorized?
+      authenticate! unless authenticated?
   
       extension = File.extname(file.path).sub('.', '')
       basename  = File.basename(file.path, ".#{extension}")
@@ -45,7 +59,7 @@ module Dewey
     # * rid    - A resource id, for example +document:12345+
     # * format - The output format, see *_EXPORT_FORMATS for possiblibilites
     def get(rid, format = nil)
-      authorize! unless authorized?
+      authenticate! unless authenticated?
   
       spreadsheet = !! rid.match(/^spreadsheet/)
       id = rid.sub(/[a-z]+:/, '')
@@ -68,7 +82,7 @@ module Dewey
     # Deletes a document referenced either by resource id or by name.
     # * id - A resource id or exact file name matching a document in the account
     def delete(id)
-      authorize! unless authorized?
+      authenticate! unless authenticated?
   
       headers = base_headers
       headers['If-Match'] = '*' # We don't care if others have modified
@@ -126,7 +140,7 @@ module Dewey
       base = {}
       base['GData-Version'] = '3.0'
       base['Content-Type']  = 'application/x-www-form-urlencoded'
-      base['Authorization'] = "GoogleLogin auth=#{@token}" if authorized?
+      base['Authorization'] = "GoogleLogin auth=#{@token}" if authenticated?
   
       base
     end
