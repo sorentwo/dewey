@@ -8,10 +8,14 @@ module Dewey
       @authentications = {}
     end
 
-    def authenticated?
-      @authentications.any? 
+    def authenticated?(service = nil)
+      if service
+        @authentications.has_key?(service)
+      else
+        @authentications.any? 
+      end
     end
-
+    
     def authenticate!(service = nil)
       service ||= :writely
 
@@ -34,6 +38,10 @@ module Dewey
       else
         raise DeweyAuthorizationException, "Unexpected response: #{response}"
       end
+    end
+    
+    def token(service = nil)
+      @authentications[service || :writely]
     end
   end
 end

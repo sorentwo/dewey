@@ -13,12 +13,23 @@ describe Dewey::ClientAuth do
   it "authenticates for writely by default" do
     stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).
       with(:body => 'accountType=HOSTED_OR_GOOGLE&Email=example&Passwd=password&service=writely').
-      to_return(:body => '=12345') 
+      to_return(:body => '=12345')
    
     client_auth.authenticate!.should be_true
     client_auth.authentications.should have_key(:writely)
 
     WebMock.should have_requested(:post, Dewey::GOOGLE_LOGIN_URL).with(:body => /.*service=writely.*/)
+  end
+  
+  it "authenticates for wise" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).
+      with(:body => 'accountType=HOSTED_OR_GOOGLE&Email=example&Passwd=password&service=wise').
+      to_return(:body => '=12345')
+    
+    client_auth.authenticate!(:wise)
+    client_auth.authentications.should have_key(:wise)
+    
+    WebMock.should have_requested(:post, Dewey::GOOGLE_LOGIN_URL).with(:body => /.*service=wise.*/)
   end
   
   it "returns false if authorization fails" do
@@ -27,9 +38,27 @@ describe Dewey::ClientAuth do
     client_auth.authenticate!.should be_false
   end
 
-  it "is authenticated with one authorization" do
-    client_auth.stub(:authentications).and_return({ :writely => '12345' })
+  it "is authenticated with one service" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
+    client_auth.authenticate!
 
     client_auth.authenticated?.should be_true
+  end
+  
+  it "can scope authentication" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345').times(2)
+    
+    client_auth.authenticate!(:writely)
+    client_auth.authenticate!(:wise)
+    
+    client_auth.authenticated?(:writely).should be_true
+    client_auth.authenticated?(:wise).should be_true
+  end
+  
+  it "provides authentication tokens" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
+    client_auth.authenticate!(:writely)
+    
+    client_auth.token(:writely).should eq('12345')
   end
 end

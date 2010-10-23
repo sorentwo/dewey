@@ -140,7 +140,7 @@ module Dewey
       base = {}
       base['GData-Version'] = '3.0'
       base['Content-Type']  = 'application/x-www-form-urlencoded'
-      base['Authorization'] = "GoogleLogin auth=#{@token}" if authenticated?
+      base['Authorization'] = "GoogleLogin auth=#{@@authenticator.token}" if authenticated?
   
       base
     end
