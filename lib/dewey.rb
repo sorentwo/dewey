@@ -11,7 +11,7 @@ module Dewey
   class DeweyAuthorizationException < Exception; end
 end
 
-require 'dewey/document'
+require 'dewey/core'
 require 'dewey/client_auth'
 require 'dewey/https'
 require 'dewey/mime'
