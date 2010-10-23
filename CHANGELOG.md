@@ -1,6 +1,20 @@
+## 0.2.0 (October 20, 2010)
+
+Additions:
+  
+  - Class-wide authentication. You only have to set up authentication once and
+    then utilize that in all successive calls.
+  - All file operations are stateless (Dewey.put, Dewey.get, etc)
+  - Store multiple authorizations simultaneously.
+  
+Changes:
+
+  - Convert API change. Format is required, not an option.
+  - No longer supports upload or download, instead use put or get.
+
 ## 0.1.4 (October 19, 2010)
   
-Improvements:
+Additions:
   
   - Handle bad mimetypes.
   - Modular validation
