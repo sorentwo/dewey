@@ -1,6 +1,5 @@
 ## Dewey TODO List
-  - Enable proper feed / service synchronization
-  - Correct spreadsheet support
+  - Implement the OAuth gem to manage service switching
+  - Add download by title
   - Add presentation support
   - Documents: list
-  - Add support for folders

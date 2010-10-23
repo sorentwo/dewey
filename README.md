@@ -15,32 +15,49 @@ Let Google do all of the hard work of converting your documents!
 
 Dewey is in alpha. It is not recommended you use this in production code.
 
-## Getting Started
+## Authorization
 
-First, create a new Dewey::Document instance using your google docs account and
-password.
+You can configure Dewey to connect with either ClientLogin or OAuth. If you choose
+OAuth you'll only have to authenticate the first time you connect and subsequent
+connections will use the saved token.
 
-    dewey = Dewey::Document.new(:account => 'example.account', :password => 'example')
+ClientLogin
 
-Next, choose a local document to upload or convert.
+    Dewey.authorization :client, :email => 'example@gmail.com', :password => 'password'
+    
+OAuth
+
+    Dewey.authorization :oauth, :idontknowwhatgoeshereyet
+
+## File Operations
+
+You can put, get, delete and convert documents, spreadsheets or presentations in
+any of the formats that Docs accepts. There is a full listing in dewey/validations.rb
+or available here: http://code.google.com/apis/documents/faq.html#WhatKindOfFilesCanIUpload
+
+Be sure to set up authorization before attempting any file operations! You don't
+need to explictely call authorize though, as it will attempt to do that on the
+first operation.
+
+Putting a document:
 
     document = File.new('my_document.doc')
-    spreadsheet = File.new('my_spreadsheet.xls')
+    resource = Dewey.put(document, 'My First Upload') # Returns the id when successful
 
-Finally, handle the upload, download, and delete manually or use the convenient
-`convert` method.
+Getting a document:
 
-    dewey.convert(document, :html)
-    dewey.convert(spreadsheet, :csv)
+    # Upload your file
+    id = Dewey.put(File.new('my_document.doc'), 'My Second Upload')
+    
+    # Get it in various formats
+    original = Dewey.get(id)     # -> Tempfile
+    pdf  = Dewey.get(id, :pdf)   # -> Tempfile
+    html = Dewey.get(id, :html)  # -> Tempfile
+    
+    # A tempfile is returned, so you'll have to move it
+    FileUtils.mv html.path, 'path/to/destination'
 
-## Testing
+Deleting a document:
 
-Until testing is converted to an offline solution you will have to provide some
-credentials for testing. All that is required is a valid Google Docs account, no
-fussing about with getting an application API.
-
-By default the spec will look for a file called dewey.yml inside of the spec 
-folder. The file should contain two lines:
-
-    email: <your gmail account>
-    password: <your gmail password>
+    id = Dewey.put(File.new('my_spreadsheet.xls'))
+    result = Dewey.delete(id) # -> true
