@@ -8,9 +8,11 @@ module Dewey
   GOOGLE_SPREADSHEET_URL = GOOGLE_SPRD_URL + "/feeds/download/spreadsheets/Export"
   
   class DeweyException < Exception; end
+  class DeweyAuthorizationException < Exception; end
 end
 
 require 'dewey/document'
+require 'dewey/client_auth'
 require 'dewey/https'
 require 'dewey/mime'
 require 'dewey/utils'
