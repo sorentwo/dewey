@@ -39,25 +39,38 @@ Be sure to set up authorization before attempting any file operations! You don't
 need to explictely call authorize though, as it will attempt to do that on the
 first operation.
 
-Putting a document:
+### Putting a Document
 
     document = File.new('my_document.doc')
     resource = Dewey.put(document, 'My First Upload') # Returns the id when successful
 
-Getting a document:
+### Searching Documents
 
-    # Upload your file
+Exact search
+
+    id = Dewey.search('My Document', :exact => true) # 'document:12345'
+
+Loose search
+
+    ids = Dewey.search('notes') # ['document:12', 'document:456']
+
+### Getting a Document
+
+Upload your file
+
     id = Dewey.put(File.new('my_document.doc'), 'My Second Upload')
     
-    # Get it in various formats
+Get it in various formats
+
     original = Dewey.get(id)     # -> Tempfile
     pdf  = Dewey.get(id, :pdf)   # -> Tempfile
     html = Dewey.get(id, :html)  # -> Tempfile
     
-    # A tempfile is returned, so you'll have to move it
+A tempfile is returned, so you'll have to move it
+
     FileUtils.mv html.path, 'path/to/destination'
 
-Deleting a document:
+### Deleting a Document
 
     id = Dewey.put(File.new('my_spreadsheet.xls'))
     result = Dewey.delete(id) # -> true

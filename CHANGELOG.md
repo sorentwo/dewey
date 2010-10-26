@@ -1,3 +1,15 @@
+## 0.2.1 (October 26, 2010)
+
+Additions:
+
+  - delete! method. Raises an exception rather than returning false when
+    operations fail.
+  - search method. For retrieving one or more document:ids from a title query.
+
+Bugfixes:
+
+  - Actually delete files rather than sending them to the trash
+
 ## 0.2.0 (October 20, 2010)
 
 Additions:
