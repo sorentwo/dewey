@@ -31,7 +31,24 @@ module Dewey
     def authenticate!
       @@authenticator.authenticate!
     end
-    
+   
+    def search(query, options = {})
+      authenticate! unless authenticated?
+      
+      title    = query.gsub(/\s+/, '+')
+      headers  = base_headers(false)
+      url      = "#{GOOGLE_FEED_URL}?title=#{title}"
+      url     << "&title-exact=true" if options[:exact]
+      response = get_request(url, headers)
+      
+      case response
+      when Net::HTTPOK
+        extract_ids(response.body)
+      else
+        nil
+      end
+    end
+
     # Upload a file to the account. A successful upload will return the resource
     # id, which is useful for downloading the file without doing a title search.
     # * file  - A File reference
@@ -61,7 +78,7 @@ module Dewey
   
       case response
       when Net::HTTPCreated
-        extract_rid(response.body)
+        extract_ids(response.body)
       else
         false
       end
@@ -98,10 +115,13 @@ module Dewey
     def delete(id)
       authenticate! unless authenticated?
   
-      headers = base_headers
+      headers = base_headers(false)
       headers['If-Match'] = '*' # We don't care if others have modified
   
-      url = GOOGLE_FEED_URL + "/#{Dewey::Utils.escape(id)}?delete=true"
+      url  = ''
+      url << GOOGLE_FEED_URL
+      url << "/#{Dewey::Utils.escape(id)}?delete=true"
+
       response = delete_request(url, headers)
   
       case response
@@ -135,7 +155,11 @@ module Dewey
     end
 
     protected
-    
+   
+    def get_request(url, headers) #:nodoc:
+      http_request(:get, url, headers)
+    end
+
     def post_request(url, data, headers) #:nodoc:
       http_request(:post, url, headers, data)
     end
@@ -148,33 +172,41 @@ module Dewey
       url = URI.parse(url) if url.kind_of? String
 
       connection = (url.scheme == 'https') ? Net::HTTPS.new(url.host, url.port) : Net::HTTP.new(url.host, url.port)
-  
+      full_path  = url.path
+      full_path << "?#{url.query}" unless url.query.nil?
+
       case method
+      when :get
+        connection.get(full_path, headers)
       when :post
-        connection.post(url.path, data, headers)
+        connection.post(full_path, data, headers)
       when :delete
-        connection.delete(url.path, headers)
+        connection.delete(full_path, headers)
       else
-        raise DeweyException, "Invalid request type. Valid options are :post and :delete"
+        raise DeweyException, "Invalid request type. Valid options are :get, :post and :delete"
       end
     end
 
-    def base_headers #:nodoc:
+    def base_headers(put_or_post = true) #:nodoc:
       base = {}
       base['GData-Version'] = '3.0'
-      base['Content-Type']  = 'application/x-www-form-urlencoded'
+      base['Content-Type']  = 'application/x-www-form-urlencoded'         if put_or_post
       base['Authorization'] = "GoogleLogin auth=#{@@authenticator.token}" if authenticated?
   
       base
     end
 
-    def extract_rid(response) #:nodoc:
+    def extract_ids(response) #:nodoc:
       xml = REXML::Document.new(response)
-  
-      begin
-        "#{$1}:#{$2}" if xml.elements['//id'].text =~ /.*(document|spreadsheet|presentation)%3A([0-9a-zA-Z_-]+)$/
-      rescue 
-        raise DeweyException, "id could not be extracted from: #{response}"
+      ids = xml.elements.
+            collect('//id') { |e| "#{$1}:#{$2}" if e.text =~ /.*(document|spreadsheet|presentation)(?:%3A|:)([0-9a-zA-Z_-]+)$/ }.
+            reject(&:nil?)
+      
+      case ids.length
+      when 0 then nil
+      when 1 then ids.first
+      else
+        ids
       end
     end
   end

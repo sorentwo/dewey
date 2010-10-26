@@ -24,11 +24,38 @@ describe Dewey do
       Dewey.stub(:authenticated?).and_return(true)
       Dewey.send(:base_headers).should have_key('Authorization')
     end
+
+    it "can omit content-type" do
+      Dewey.send(:base_headers, false).should_not have_key('Content-Type')
+    end
   end
   
   describe "File Operations" do
     before(:each) do
       Dewey.stub(:authenticated?).and_return(true)
+    end
+   
+    describe "#search" do
+      it "can exactly match a single document" do
+        stub_request(:get, "#{Dewey::GOOGLE_FEED_URL}?title=HR+Handbook&title-exact=true").
+          to_return(:body => '<feed><entry><id>document:12345</id></entry></feed>')
+        
+        Dewey.search('HR Handbook', :exact => true).should eq('document:12345')
+      end
+
+      it "can partially match a single document" do
+        stub_request(:get, "#{Dewey::GOOGLE_FEED_URL}?title=Spec+101").
+          to_return(:body => '<feed><entry><id>document:12345</id></entry></feed>')
+        
+        Dewey.search('Spec 101').should eq('document:12345')
+      end
+      
+      it "can partially match multiple document" do
+        stub_request(:get, "#{Dewey::GOOGLE_FEED_URL}?title=notes").
+          to_return(:body => '<feed><entry><id>document:123</id></entry><entry><id>document:456</id></entry></feed>')
+        
+        Dewey.search('notes').should eq(['document:123', 'document:456'])
+      end
     end
     
     describe "#put" do
@@ -68,39 +95,39 @@ describe Dewey do
   
     describe "#delete" do
       it "deletes a resource from an id" do
-        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345")
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true")
         Dewey.delete('document:12345').should be_true
       end
 
       it "reports false when a resource can't be found" do
-        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345").to_return(:status => 300)
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true").to_return(:status => 300)
         Dewey.delete('document:12345').should be_false
       end
     end
   
     describe "#delete!" do
       it "raises an error when a resource can't be found" do
-        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345").to_return(:status => 300)
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true").to_return(:status => 300)
         lambda { Dewey.delete!('document:12345') }.should raise_exception(Dewey::DeweyException)
       end
     end
 
     describe "#get" do 
-      it "should be able to download a document" do
+      it "is able to download a document" do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
           to_return(:body => sample_file('sample_document.doc'))
         
         Dewey.get('document:12345', :doc).should be_kind_of(Tempfile)
       end
       
-      it "should be able to download a spreadsheet" do
+      it "is able to download a spreadsheet" do
         stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv").
           to_return(:body => sample_file('sample_spreadsheet.csv'))
         
         Dewey.get('spreadsheet:12345', :csv).should be_kind_of(Tempfile)
       end
       
-      it "should be able to download the same document repeatedly" do
+      it "is able to download the same document repeatedly" do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
           to_return(:body => sample_file('sample_document.doc'))
         
