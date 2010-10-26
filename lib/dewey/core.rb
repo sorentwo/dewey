@@ -111,6 +111,13 @@ module Dewey
         false
       end
     end
+    
+    # The same as delete, except that it will raise +Dewey::DeweyException+ if
+    # the request fails.
+    #
+    def delete!(id)
+      delete(id) || raise(DeweyException, "Unable to delete document")
+    end
 
     # Convenience method for +put+, +get+, +delete+. Returns a Tempfile
     # with in the provided type. Note that if you omit the format option it will

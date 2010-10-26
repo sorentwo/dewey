@@ -67,13 +67,25 @@ describe Dewey do
     end
   
     describe "#delete" do
-      it "should delete a resource from an id" do
+      it "deletes a resource from an id" do
         stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345")
         Dewey.delete('document:12345').should be_true
       end
+
+      it "reports false when a resource can't be found" do
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345").to_return(:status => 300)
+        Dewey.delete('document:12345').should be_false
+      end
     end
   
-    describe "#get" do      
+    describe "#delete!" do
+      it "raises an error when a resource can't be found" do
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345").to_return(:status => 300)
+        lambda { Dewey.delete!('document:12345') }.should raise_exception(Dewey::DeweyException)
+      end
+    end
+
+    describe "#get" do 
       it "should be able to download a document" do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
           to_return(:body => sample_file('sample_document.doc'))
