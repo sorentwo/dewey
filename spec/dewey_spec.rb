@@ -17,12 +17,12 @@ describe Dewey do
   
   describe "Constructing Headers" do
     it "does not set Authorization headers without authentication" do
-      Dewey.base_headers.should_not have_key('Authorization')
+      Dewey.send(:base_headers).should_not have_key('Authorization')
     end
     
     it "has Authorization headers with authentication" do
       Dewey.stub(:authenticated?).and_return(true)
-      Dewey.base_headers.should have_key('Authorization')
+      Dewey.send(:base_headers).should have_key('Authorization')
     end
   end
   

@@ -6,6 +6,11 @@ require 'tempfile'
 
 module Dewey
   class << self
+    
+    # Set the authentication strategy. You can currently only use ClientAuth,
+    # but you must provide +email+ and +password+ options. You must set up
+    # authentication before using any file operations.
+    #
     def authentication(strategy, options)
       case strategy
       when :client
@@ -13,10 +18,16 @@ module Dewey
       end
     end
     
+    # Report whether Dewey has both an authentication strategy selected, and has
+    # been authenticated. Delegates to the chosen authenticator.
+    #
     def authenticated?
       !@@authenticator.nil? && @@authenticator.authenticated?
     end
     
+    # Tell the authentication strategy to authenticate. Not necessary though, as
+    # any file operation will authenticate automatically.
+    #
     def authenticate!
       @@authenticator.authenticate!
     end
@@ -25,6 +36,7 @@ module Dewey
     # id, which is useful for downloading the file without doing a title search.
     # * file  - A File reference
     # * title - An alternative title, to be used instead of the filename
+    #
     def put(file, title = nil)
       authenticate! unless authenticated?
   
@@ -58,6 +70,7 @@ module Dewey
     # Download, or export more accurately, a file to a specified format
     # * rid    - A resource id, for example +document:12345+
     # * format - The output format, see *_EXPORT_FORMATS for possiblibilites
+    #
     def get(rid, format = nil)
       authenticate! unless authenticated?
   
@@ -79,8 +92,9 @@ module Dewey
       file
     end
 
-    # Deletes a document referenced either by resource id or by name.
+    # Deletes a document referenced either by resource id.
     # * id - A resource id or exact file name matching a document in the account
+    #
     def delete(id)
       authenticate! unless authenticated?
   
@@ -102,8 +116,8 @@ module Dewey
     # with in the provided type. Note that if you omit the format option it will
     # simply upload the file and return it.
     # * file    - The file that will be converted
-    # * options - Takes :title and :format. See +upload+ for title, and +download+
-    #             for format.
+    # * options - Takes :title and :format. See +upload+ for title, and +download+ for format.
+    #
     def convert(file, options = {})
       rid = put(file, options[:title])
       con = get(rid, options[:format])
@@ -113,6 +127,8 @@ module Dewey
       con
     end
 
+    protected
+    
     def post_request(url, data, headers) #:nodoc:
       http_request(:post, url, headers, data)
     end
