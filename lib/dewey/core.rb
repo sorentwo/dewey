@@ -187,19 +187,27 @@ module Dewey
       end
     end
 
-    def base_headers(put_or_post = true) #:nodoc:
+    # A hash of default headers. Considers authentication and put/post headers.
+    #
+    # @param [Boolean] form If true the Content-Type will be set accordingly
+    # @return [Hash] Headers hash
+    def base_headers(form = true) #:nodoc:
       base = {}
       base['GData-Version'] = '3.0'
-      base['Content-Type']  = 'application/x-www-form-urlencoded'         if put_or_post
+      base['Content-Type']  = 'application/x-www-form-urlencoded'         if form
       base['Authorization'] = "GoogleLogin auth=#{@@authenticator.token}" if authenticated?
   
       base
     end
 
+    # Parse the XML returned to pull out one or more document ids.
+    #
+    # @param  [String] response An XML feed document
+    # @return [Array]  Array of document ids
     def extract_ids(response) #:nodoc:
       xml = REXML::Document.new(response)
       ids = xml.elements.
-            collect('//id') { |e| "#{$1}:#{$2}" if e.text =~ /.*(document|spreadsheet|presentation)(?:%3A|:)([0-9a-zA-Z_-]+)$/ }.
+            collect('//id') { |e| e.text.gsub('%3A', ':') }.
             reject(&:nil?)
       
       case ids.length
