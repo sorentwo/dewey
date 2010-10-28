@@ -91,6 +91,22 @@ describe Dewey do
           
         Dewey.put(@spr).should eq('spreadsheet:12345')
       end
+
+      it "specifies an optional title in the header" do
+        stub_request(:post, Dewey::GOOGLE_FEED_URL)
+        Dewey.put(@txt, :title => 'Secret')
+
+        a_request(:post, Dewey::GOOGLE_FEED_URL).
+          with(:headers => { 'Slug' => 'Secret' }).should have_been_made
+      end
+
+      it "specifies the filesize in the header" do
+        stub_request(:post, Dewey::GOOGLE_FEED_URL)
+        Dewey.put(@txt)
+
+        a_request(:post, Dewey::GOOGLE_FEED_URL).
+          with(:headers => { 'Content-Length' => @txt.size }).should have_been_made
+      end
     end
   
     describe "#delete" do
