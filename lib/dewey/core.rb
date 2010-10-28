@@ -33,8 +33,6 @@ module Dewey
     end
    
     def search(query, options = {})
-      authenticate! unless authenticated?
-      
       title    = query.gsub(/\s+/, '+')
       headers  = base_headers(false)
       url      = "#{GOOGLE_FEED_URL}?title=#{title}"
@@ -59,8 +57,6 @@ module Dewey
     # 
     # @return [String, Boolean] The id if upload was successful, false otherwise
     def put(file, options = {})
-      authenticate! unless authenticated?
-  
       extension = File.extname(file.path).sub('.', '')
       basename  = File.basename(file.path, ".#{extension}")
       mimetype  = Dewey::Mime.mime_type(file)
@@ -98,8 +94,6 @@ module Dewey
     # @see Dewey::Validation::SPREADSHEET_EXPORT_FORMATS
     # @see Dewey::Validation::PRESENTATION_EXPORT_FORMATS
     def get(id, options = {})
-      authenticate! unless authenticated?
-  
       # This is pretty hackish. Will need re-working with presentation support
       spreadsheet = !! id.match(/^spreadsheet/)
       
@@ -128,8 +122,6 @@ module Dewey
     #
     # @return [Boolean] `true` if delete was successful, `false` otherwise
     def delete(id)
-      authenticate! unless authenticated?
-  
       headers = base_headers(false)
       headers['If-Match'] = '*' # We don't care if others have modified
   
@@ -148,6 +140,18 @@ module Dewey
     # @see #delete
     def delete!(id)
       delete(id) || raise(DeweyException, "Unable to delete document")
+    end
+
+    [:search, :put, :get, :delete].each do |method|
+      aliased = "no_auto_authenticate_#{method.to_s}".to_sym 
+      alias_method aliased, method
+      
+      self.class_eval(%Q{
+        def #{method} *args
+          authenticate! unless authenticated?
+          #{aliased}(*args)
+        end
+      })
     end
 
     # Convenience method for `put`, `get`, `delete`.
