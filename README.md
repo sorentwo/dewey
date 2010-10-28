@@ -42,7 +42,7 @@ first operation.
 ### Putting a Document
 
     document = File.new('my_document.doc')
-    resource = Dewey.put(document, 'My First Upload') # Returns the id when successful
+    resource = Dewey.put(document, :title => 'My First Upload') # Returns the id when successful
 
 ### Searching Documents
 
