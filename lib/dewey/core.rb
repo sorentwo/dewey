@@ -86,20 +86,29 @@ module Dewey
       end
     end
 
-    # Download, or export more accurately, a file to a specified format
-    # * rid    - A resource id, for example +document:12345+
-    # * format - The output format, see *_EXPORT_FORMATS for possiblibilites
+    # Download a file. You may optionally specify a format for export.
     #
-    def get(rid, format = nil)
+    # @param [String] id       A resource id, for example `document:12345`
+    # @param [Hash]   options  Options for downloading the document
+    # @option options [Symbol] :format The output format
+    # 
+    # @return [Tempfile] The downloaded file
+    #
+    # @see Dewey::Validation::DOCUMENT_EXPORT_FORMATS
+    # @see Dewey::Validation::SPREADSHEET_EXPORT_FORMATS
+    # @see Dewey::Validation::PRESENTATION_EXPORT_FORMATS
+    def get(rid, options = {})
       authenticate! unless authenticated?
   
       spreadsheet = !! rid.match(/^spreadsheet/)
       id = rid.sub(/[a-z]+:/, '')
-  
+      
+      format = options[:format].to_s
+
       url  = ''
       url << (spreadsheet ? GOOGLE_SPREADSHEET_URL : GOOGLE_DOCUMENT_URL)
       url << (spreadsheet ? "?key=#{id}" : "?docID=#{id}")
-      url << "&exportFormat=#{format.to_s}" unless format.nil?
+      url << "&exportFormat=#{format}" unless format.blank?
   
       headers = base_headers
   

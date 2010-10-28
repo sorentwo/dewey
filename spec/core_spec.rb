@@ -133,14 +133,14 @@ describe Dewey do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
           to_return(:body => sample_file('sample_document.doc'))
         
-        Dewey.get('document:12345', :doc).should be_kind_of(Tempfile)
+        Dewey.get('document:12345', :format => :doc).should be_kind_of(Tempfile)
       end
       
       it "is able to download a spreadsheet" do
         stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv").
           to_return(:body => sample_file('sample_spreadsheet.csv'))
         
-        Dewey.get('spreadsheet:12345', :csv).should be_kind_of(Tempfile)
+        Dewey.get('spreadsheet:12345', :format => :csv).should be_kind_of(Tempfile)
       end
       
       it "is able to download the same document repeatedly" do
@@ -148,7 +148,7 @@ describe Dewey do
           to_return(:body => sample_file('sample_document.doc'))
         
         2.times do
-          Dewey.get('document:12345', :doc).should be_kind_of(Tempfile)
+          Dewey.get('document:12345', :format => :doc).should be_kind_of(Tempfile)
         end
       end
     end
