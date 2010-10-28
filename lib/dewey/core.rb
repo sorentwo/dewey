@@ -150,19 +150,26 @@ module Dewey
       delete(id) || raise(DeweyException, "Unable to delete document")
     end
 
-    # Convenience method for +put+, +get+, +delete+. Returns a Tempfile
-    # with in the provided type. Note that if you omit the format option it will
-    # simply upload the file and return it.
-    # * file    - The file that will be converted
-    # * options - Takes :title and :format. See +upload+ for title, and +download+ for format.
+    # Convenience method for `put`, `get`, `delete`.
     #
+    # @param [File] file The file that will be converted
+    # @param [Hash] options Options for conversion
+    # @option options [Symbol] :title  The title that the file will be stored
+    #   under. Only useful if the conversion fails.
+    # @option options [Symbol] :format Format to convert to.
+    #
+    # @return [Tempfile] The converted file
+    #
+    # @see #put
+    # @see #get
+    # @see #delete
     def convert(file, options = {})
-      rid = put(file, options[:title])
-      con = get(rid, options[:format])
+      id = put(file, options[:title])
+      converted = get(id, options[:format])
   
-      delete(rid)
+      delete(id)
   
-      con
+      converted
     end
 
     protected
