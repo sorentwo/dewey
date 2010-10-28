@@ -32,6 +32,15 @@ module Dewey
       @@authenticator.authenticate!
     end
    
+    # Queries the document list for a particular title. Titles can be either 
+    # full or partial matches. Matches are returned as an array of ids.
+    #
+    # @param [String] query   The title to be matched
+    # @param [Hash]   options Search options
+    # @option options [Symbol] :exact Setting this to `true` will force an
+    #   exact match, with a maximum of one id returned
+    #
+    # @return [Array] An array of matched ids. No matches return an empty array
     def search(query, options = {})
       title    = query.gsub(/\s+/, '+')
       headers  = base_headers(false)
@@ -39,12 +48,7 @@ module Dewey
       url     << "&title-exact=true" if options[:exact]
       response = get_request(url, headers)
       
-      case response
-      when Net::HTTPOK
-        extract_ids(response.body)
-      else
-        nil
-      end
+      response.kind_of?(Net::HTTPOK) ? extract_ids(response.body) : []
     end
 
     # Upload a file to the account. A successful upload will return the resource
