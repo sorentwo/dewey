@@ -122,9 +122,11 @@ module Dewey
       file
     end
 
-    # Deletes a document referenced either by resource id.
-    # * id - A resource id or exact file name matching a document in the account
+    # Deletes a document referenced by id.
     #
+    # @param [String] id An id matching a document
+    #
+    # @return [Boolean] `true` if delete was successful, `false` otherwise
     def delete(id)
       authenticate! unless authenticated?
   
@@ -137,17 +139,13 @@ module Dewey
 
       response = delete_request(url, headers)
   
-      case response
-      when Net::HTTPOK
-        true
-      else
-        false
-      end
+      response.kind_of?(Net::HTTPOK)
     end
     
-    # The same as delete, except that it will raise +Dewey::DeweyException+ if
+    # The same as delete, except that it will raise `Dewey::DeweyException` if
     # the request fails.
-    #
+    # 
+    # @see #delete
     def delete!(id)
       delete(id) || raise(DeweyException, "Unable to delete document")
     end
