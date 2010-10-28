@@ -40,14 +40,14 @@ describe Dewey do
         stub_request(:get, "#{Dewey::GOOGLE_FEED_URL}?title=HR+Handbook&title-exact=true").
           to_return(:body => '<feed><entry><id>document:12345</id></entry></feed>')
         
-        Dewey.search('HR Handbook', :exact => true).should eq('document:12345')
+        Dewey.search('HR Handbook', :exact => true).should eq(['document:12345'])
       end
 
       it "can partially match a single document" do
         stub_request(:get, "#{Dewey::GOOGLE_FEED_URL}?title=Spec+101").
           to_return(:body => '<feed><entry><id>document:12345</id></entry></feed>')
         
-        Dewey.search('Spec 101').should eq('document:12345')
+        Dewey.search('Spec 101').should eq(['document:12345'])
       end
       
       it "can partially match multiple document" do

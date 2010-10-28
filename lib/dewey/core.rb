@@ -78,7 +78,7 @@ module Dewey
   
       case response
       when Net::HTTPCreated
-        extract_ids(response.body)
+        extract_ids(response.body).first
       else
         false
       end
@@ -206,16 +206,7 @@ module Dewey
     # @return [Array]  Array of document ids
     def extract_ids(response) #:nodoc:
       xml = REXML::Document.new(response)
-      ids = xml.elements.
-            collect('//id') { |e| e.text.gsub('%3A', ':') }.
-            reject(&:nil?)
-      
-      case ids.length
-      when 0 then nil
-      when 1 then ids.first
-      else
-        ids
-      end
+      xml.elements.collect('//id') { |e| e.text.gsub('%3A', ':') }.reject(&:blank?)
     end
   end
 end
