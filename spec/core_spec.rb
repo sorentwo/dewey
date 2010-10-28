@@ -129,6 +129,10 @@ describe Dewey do
     end
 
     describe "#get" do 
+      it "raises with an invalid format" do
+        lambda { Dewey.get('document:12345', :format => :psd) }.should raise_exception(Dewey::DeweyException)
+      end
+
       it "is able to download a document" do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
           to_return(:body => sample_file('sample_document.doc'))
@@ -141,15 +145,6 @@ describe Dewey do
           to_return(:body => sample_file('sample_spreadsheet.csv'))
         
         Dewey.get('spreadsheet:12345', :format => :csv).should be_kind_of(Tempfile)
-      end
-      
-      it "is able to download the same document repeatedly" do
-        stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
-          to_return(:body => sample_file('sample_document.doc'))
-        
-        2.times do
-          Dewey.get('document:12345', :format => :doc).should be_kind_of(Tempfile)
-        end
       end
     end
     

@@ -98,24 +98,27 @@ module Dewey
     # @see Dewey::Validation::SPREADSHEET_EXPORT_FORMATS
     # @see Dewey::Validation::PRESENTATION_EXPORT_FORMATS
     def get(id, options = {})
-      # This is pretty hackish. Will need re-working with presentation support
-      spreadsheet = !! id.match(/^spreadsheet/)
-      
-      id.sub!(/[a-z]+:/, '')
-      
+      service, id = id.split(':')
       format = options[:format].to_s
 
-      url  = ''
-      url << (spreadsheet ? GOOGLE_SPREADSHEET_URL : GOOGLE_DOCUMENT_URL)
-      url << (spreadsheet ? "?key=#{id}" : "?docID=#{id}")
+      raise DeweyException, "Invalid format: #{format}" unless Dewey::Validation.valid_export_format?(format, service)
+
+      url = ''
+      case service
+      when 'document'
+        url << GOOGLE_DOCUMENT_URL
+        url << "?docID=#{id}"
+      when 'spreadsheet'
+        url << GOOGLE_SPREADSHEET_URL
+        url << "?key=#{id}"
+      end
+
       url << "&exportFormat=#{format}" unless format.blank?
-  
-      headers = base_headers
   
       file = Tempfile.new([id, format].join('.'))
       file.binmode
   
-      open(url, headers) { |data| file.write data.read }
+      open(url, base_headers) { |data| file.write data.read }
   
       file
     end
