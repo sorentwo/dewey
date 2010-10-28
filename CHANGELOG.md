@@ -1,3 +1,12 @@
+## 0.2.2 (October 27, 2010)
+
+  Changes:
+
+    - API Changes for get and put. All methods will use an options hash
+      rather than ordered options.
+    - Validation methods can accept either a string or a symbol
+    - More error-resistant handling of nil values passed to validation methods
+
 ## 0.2.1 (October 26, 2010)
 
 Additions:
