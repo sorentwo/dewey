@@ -62,9 +62,9 @@ Upload your file
     
 Get it in various formats
 
-    original = Dewey.get(id)     # -> Tempfile
-    pdf  = Dewey.get(id, :pdf)   # -> Tempfile
-    html = Dewey.get(id, :html)  # -> Tempfile
+    original = Dewey.get(id)                #=> Tempfile
+    pdf  = Dewey.get(id, :format => :pdf)   #=> Tempfile
+    html = Dewey.get(id, :format => :html)  #=> Tempfile
     
 A tempfile is returned, so you'll have to move it
 
