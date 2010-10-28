@@ -51,18 +51,21 @@ module Dewey
 
     # Upload a file to the account. A successful upload will return the resource
     # id, which is useful for downloading the file without doing a title search.
-    # * file  - A File reference
-    # * title - An alternative title, to be used instead of the filename
     #
-    def put(file, title = nil)
+    # @param [File] file    An IOStream object that responds to path, size
+    # @param [Hash] options Options for uploading the file
+    # @option options [Symbol] :title An alternative title, to be used instead
+    #                                 of the filename
+    # 
+    # @return [String, Boolean] The id if upload was successful, false otherwise
+    def put(file, options = {})
       authenticate! unless authenticated?
   
       extension = File.extname(file.path).sub('.', '')
       basename  = File.basename(file.path, ".#{extension}")
       mimetype  = Dewey::Mime.mime_type(file)
       service   = Dewey::Mime.guess_service(mimetype)
-  
-      title ||= basename
+      title     = options[:title] || basename
   
       raise DeweyException, "Invalid file type: #{extension}" unless Dewey::Validation.valid_upload_format?(extension, service)
   
@@ -75,9 +78,8 @@ module Dewey
       file.rewind
   
       response = post_request(GOOGLE_FEED_URL, file.read.to_s, headers)
-  
-      case response
-      when Net::HTTPCreated
+ 
+      if response.kind_of?(Net::HTTPCreated)
         extract_ids(response.body).first
       else
         false
