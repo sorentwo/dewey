@@ -14,6 +14,11 @@ describe Dewey::Validation do
     Dewey::Validation.valid_upload_format?(:pdf, :spreadsheet).should_not be_true
   end
 
+  it "should default to document" do
+    Dewey::Validation.valid_upload_format?(:txt).should be_true
+    Dewey::Validation.valid_upload_format?(:txt, nil).should be_true
+  end
+
   it "should raise when given an invalid upload service" do
     lambda { Dewey::Validation.valid_upload_format?(:ical, :cl) }.should raise_exception(Dewey::DeweyException)
   end
