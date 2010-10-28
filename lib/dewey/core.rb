@@ -97,11 +97,13 @@ module Dewey
     # @see Dewey::Validation::DOCUMENT_EXPORT_FORMATS
     # @see Dewey::Validation::SPREADSHEET_EXPORT_FORMATS
     # @see Dewey::Validation::PRESENTATION_EXPORT_FORMATS
-    def get(rid, options = {})
+    def get(id, options = {})
       authenticate! unless authenticated?
   
-      spreadsheet = !! rid.match(/^spreadsheet/)
-      id = rid.sub(/[a-z]+:/, '')
+      # This is pretty hackish. Will need re-working with presentation support
+      spreadsheet = !! id.match(/^spreadsheet/)
+      
+      id.sub!(/[a-z]+:/, '')
       
       format = options[:format].to_s
 
@@ -112,7 +114,7 @@ module Dewey
   
       headers = base_headers
   
-      file = Tempfile.new([rid, format].join('.'))
+      file = Tempfile.new([id, format].join('.'))
       file.binmode
   
       open(url, headers) { |data| file.write data.read }
