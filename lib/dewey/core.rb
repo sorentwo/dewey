@@ -123,23 +123,27 @@ module Dewey
       file
     end
 
-    # Deletes a document referenced by id. The default behavior is to delete
-    # the document permanently, rather than trashing it. 
+    # Deletes a document. The default behavior is to delete the document
+    # permanently, rather than trashing it. 
     #
-    # @param [String] id      An id matching a document
-    # @param [Hash]   options Options for deleting the document
+    # @param [String] query    A resource id or title. If a title is provided
+    #                          a search will be performed automatically.
+    # @param [Hash]   options  Options for deleting the document
     # @option options [Symbol] :trash If `true` the resource will be sent to
-    #   the trash, rather than being permanently deleted.
+    #                          the trash, rather than being permanently deleted.
     #
     # @return [Boolean] `true` if delete was successful, `false` otherwise
-    def delete(id, options = {})
-      headers = base_headers(false)
-      headers['If-Match'] = '*' # We don't care if others have modified
-  
-      url  = ''
-      url << GOOGLE_FEED_URL
-      url << "/#{Dewey::Utils.escape(id)}"
-      url << "?delete=true" unless options[:trash]
+    def delete(query, options = {})
+
+      # We use 'If-Match' => '*' to make sure we delete regardless of others
+      headers = base_headers(false).merge({'If-Match' => '*'}) 
+      trash   = options.delete(:trash) || false
+      id      = (query.match(/^(doc|spr|pres).+:.+$/)) ? query : search(query, :exact => true).first
+      
+      return false if id.nil?
+
+      url   = "#{GOOGLE_FEED_URL}/#{Dewey::Utils.escape(id)}"
+      url << "?delete=true" unless trash
 
       response = delete_request(url, headers)
   
