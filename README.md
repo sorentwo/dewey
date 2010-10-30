@@ -42,35 +42,55 @@ first operation.
 ### Putting a Document
 
     document = File.new('my_document.doc')
-    resource = Dewey.put(document, :title => 'My First Upload') # Returns the id when successful
+    resource = Dewey.put(document, :title => 'My First Upload') #=> 'document:12345'
 
 ### Searching Documents
 
 Exact search
 
-    id = Dewey.search('My Document', :exact => true) # 'document:12345'
+    Dewey.search('My Document', :exact => true) #=> ['document:12345']
 
 Loose search
 
-    ids = Dewey.search('notes') # ['document:12', 'document:456']
+    ids = Dewey.search('notes') #=> ['document:12', 'document:456']
 
 ### Getting a Document
 
 Upload your file
 
     id = Dewey.put(File.new('my_document.doc'), 'My Second Upload')
-    
+
 Get it in various formats
 
     original = Dewey.get(id)                #=> Tempfile
     pdf  = Dewey.get(id, :format => :pdf)   #=> Tempfile
     html = Dewey.get(id, :format => :html)  #=> Tempfile
-    
+
 A tempfile is returned, so you'll have to move it
 
     FileUtils.mv html.path, 'path/to/destination'
 
+Getting a document by title. Unmatched searches return nil
+
+    Dewey.get('My Document') #=> Tempfile
+    Dewey.get('No Match')    #=> nil
+
 ### Deleting a Document
 
+Deleting a document from a resource id
+
     id = Dewey.put(File.new('my_spreadsheet.xls'))
-    result = Dewey.delete(id) # -> true
+    Dewey.delete(id) #=> true
+
+Deleting by title. Unmatched searches return false
+
+    Dewey.delete('My Document') #=> true
+    Dewey.delete('No Match')    #=> false
+
+Sending to the trash rather than deleting
+
+    Dewey.delete('My Document', :trash => true) #=> true
+
+If you would prefer an error when deletion fails
+
+    Dewey.delete!('My Document') #=> raise DeweyException

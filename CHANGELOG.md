@@ -1,3 +1,15 @@
+## 0.2.3 (October 30, 2010)
+
+  Additions:
+  
+    - #delete and #delete! accept an optional :trash option to send a resource
+      to the trash, rather than being fully deleted.
+    - #get and #elete by title. Handles exact matches only.
+  
+  Bugfixes:
+    
+    - Not setting the :format option on #get no longers raises
+
 ## 0.2.2 (October 27, 2010)
 
   Changes:
