@@ -182,7 +182,7 @@ describe Dewey do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
           to_return(:status => 301)
 
-        Dewey.get('document:12345')
+        Dewey.get('document:12345').should be_nil
       end
 
       it "downloads a document by title" do
