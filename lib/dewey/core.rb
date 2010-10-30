@@ -154,8 +154,8 @@ module Dewey
     # the request fails.
     # 
     # @see #delete
-    def delete!(id, options = {})
-      delete(id, options) || raise(DeweyException, "Unable to delete document")
+    def delete!(query, options = {})
+      delete(query, options) || raise(DeweyException, "Unable to delete document")
     end
 
     [:search, :put, :get, :delete].each do |method|
