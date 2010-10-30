@@ -119,12 +119,22 @@ describe Dewey do
         stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true").to_return(:status => 300)
         Dewey.delete('document:12345').should be_false
       end
+
+      it "doesn't delete with the trash option" do
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345")
+        Dewey.delete('document:12345', :trash => true).should be_true
+      end
     end
   
     describe "#delete!" do
       it "raises an error when a resource can't be found" do
         stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true").to_return(:status => 300)
         lambda { Dewey.delete!('document:12345') }.should raise_exception(Dewey::DeweyException)
+      end
+
+      it "doesn't delete with the trash option" do
+        stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345")
+        Dewey.delete!('document:12345', :trash => true).should be_true
       end
     end
 
