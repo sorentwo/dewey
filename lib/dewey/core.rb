@@ -1,6 +1,5 @@
 require 'uri'
 require 'net/https'
-require 'open-uri'
 require 'rexml/document'
 require 'tempfile'
 
@@ -88,22 +87,26 @@ module Dewey
 
     # Download a file. You may optionally specify a format for export.
     #
-    # @param [String] id       A resource id, for example `document:12345`
+    # @param [String] query    A resource id or title, `document:12345` or
+    #                          `My Document` for example
     # @param [Hash]   options  Options for downloading the document
     # @option options [Symbol] :format The output format
     # 
-    # @return [Tempfile] The downloaded file
+    # @return [Tempfile, nil] The downloaded file, otherwise `nil` if the file
+    #                         couldn't be found.
     #
     # @see Dewey::Validation::DOCUMENT_EXPORT_FORMATS
     # @see Dewey::Validation::SPREADSHEET_EXPORT_FORMATS
     # @see Dewey::Validation::PRESENTATION_EXPORT_FORMATS
-    def get(id, options = {})
-      service, id = id.split(':')
-      format = options[:format].to_s
+    def get(query, options = {})
+      resource_id = is_id?(query) ? query : search(query, :exact => true).first
 
-      raise DeweyException, "Invalid format: #{format}" unless Dewey::Validation.valid_export_format?(format, service)
+      return nil if resource_id.nil?
 
-      url = ''
+      service, id = resource_id.split(':')
+      format      = options[:format].to_s
+      url         = ''
+
       case service
       when 'document'
         url << GOOGLE_DOCUMENT_URL
@@ -113,14 +116,24 @@ module Dewey
         url << "?key=#{id}"
       end
 
-      url << "&exportFormat=#{format}" unless format.blank?
-  
-      file = Tempfile.new([id, format].join('.'))
-      file.binmode
-  
-      open(url, base_headers) { |data| file.write data.read }
-  
-      file
+      unless format.blank?
+        if Dewey::Validation.valid_export_format?(format, service)
+          url << "&exportFormat=#{format}" unless format.blank?
+        else
+          raise DeweyException, "Invalid format: #{format}" 
+        end
+      end
+
+      response = get_request(url, base_headers)
+      
+      if response.kind_of?(Net::HTTPOK)
+        file = Tempfile.new([id, format].join('.'))
+        file.binmode
+        file.write(response.body)
+        file
+      else
+        nil
+      end
     end
 
     # Deletes a document. The default behavior is to delete the document
@@ -138,7 +151,7 @@ module Dewey
       # We use 'If-Match' => '*' to make sure we delete regardless of others
       headers = base_headers(false).merge({'If-Match' => '*'}) 
       trash   = options.delete(:trash) || false
-      id      = (query.match(/^(doc|spr|pres).+:.+$/)) ? query : search(query, :exact => true).first
+      id      = (is_id?(query)) ? query : search(query, :exact => true).first
       
       return false if id.nil?
 
@@ -245,6 +258,11 @@ module Dewey
     def extract_ids(response) #:nodoc:
       xml = REXML::Document.new(response)
       xml.elements.collect('//id') { |e| e.text.gsub('%3A', ':') }.reject(&:blank?)
+    end
+
+    # Is the string an id or a search query?
+    def is_id?(string)
+      string.match(/^(doc|spr|pres).+:.+$/)
     end
   end
 end

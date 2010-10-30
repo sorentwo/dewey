@@ -164,13 +164,41 @@ describe Dewey do
         lambda { Dewey.get('document:12345', :format => :psd) }.should raise_exception(Dewey::DeweyException)
       end
 
-      it "is able to download a document" do
+      it "downloads a document by id" do
+        stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
+          to_return(:body => sample_file('sample_document.txt'))
+        
+        Dewey.get('document:12345').should be_kind_of(Tempfile)
+      end
+      
+      it "sets the export format when format is provided" do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc").
           to_return(:body => sample_file('sample_document.doc'))
         
         Dewey.get('document:12345', :format => :doc).should be_kind_of(Tempfile)
       end
+
+      it "returns nil when the id can't be found" do
+        stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
+          to_return(:status => 301)
+
+        Dewey.get('document:12345')
+      end
+
+      it "downloads a document by title" do
+        Dewey.should_receive(:search).with('My Document', { :exact => true }).and_return(['document:12345'])
+        stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
+          to_return(:body => sample_file('sample_document.doc'))
+
+        Dewey.get('My Document').should be_kind_of(Tempfile)
+      end
       
+      it "returns nil when the title can't be found" do
+        Dewey.should_receive(:search).with('My Document', { :exact => true }).and_return([])
+
+        Dewey.get('My Document').should be_nil
+      end
+
       it "is able to download a spreadsheet" do
         stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv").
           to_return(:body => sample_file('sample_spreadsheet.csv'))
