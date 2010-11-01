@@ -80,14 +80,14 @@ describe Dewey do
 
       it "get a resource id after putting a document" do
         stub_request(:post, Dewey::GOOGLE_FEED_URL).
-          to_return(:status => 201, :body => "<feed><entry><id>document%3A12345</id></entry></feed>")
+          to_return(:status => 201, :body => "<feed><entry><id>https://docs.google.com/feeds/id/document:12345</id></entry></feed>")
         
         Dewey.put(@txt).should eq('document:12345')
       end
       
       it "get a resource id after putting a spreadsheet" do
         stub_request(:post, Dewey::GOOGLE_FEED_URL).
-          to_return(:status => 201, :body => "<feed><entry><id>spreadsheet%3A12345</id></entry></feed>")
+          to_return(:status => 201, :body => "<feed><entry><id>https://docs.google.com/feeds/id/spreadsheet:12345</id></entry></feed>")
           
         Dewey.put(@spr).should eq('spreadsheet:12345')
       end
