@@ -111,6 +111,12 @@ module Dewey
       when 'document'
         url << GOOGLE_DOCUMENT_URL
         url << "?docID=#{id}"
+      when 'drawing'
+        url << GOOGLE_DRAWING_URL
+        url << "?docID=#{id}"
+      when 'presentation'
+        url << GOOGLE_PRESENTATION_URL
+        url << "?docID=#{id}"
       when 'spreadsheet'
         url << GOOGLE_SPREADSHEET_URL
         url << "?key=#{id}"
@@ -263,7 +269,7 @@ module Dewey
 
     # Is the string an id or a search query?
     def is_id?(string)
-      string.match(/^(doc|spr|pres).+:.+$/)
+      string.match(/^(document|drawing|presentation|spreadsheet):.+$/)
     end
   end
 end

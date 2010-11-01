@@ -205,11 +205,25 @@ describe Dewey do
         Dewey.get('My Document').should be_nil
       end
 
+      it "is able to download a drawing" do
+        stub_request(:get, "#{Dewey::GOOGLE_DRAWING_URL}?docID=12345").
+          to_return(:body => sample_file('sample_document.pdf'))
+
+        Dewey.get('drawing:12345').should_not be_nil
+      end
+
+      it "is able to download a presentation" do
+        stub_request(:get, "#{Dewey::GOOGLE_PRESENTATION_URL}?docID=12345").
+          to_return(:body => sample_file('sample_document.pdf'))
+
+        Dewey.get('presentation:12345').should_not be_nil
+      end
+
       it "is able to download a spreadsheet" do
-        stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv").
+        stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345").
           to_return(:body => sample_file('sample_spreadsheet.csv'))
         
-        Dewey.get('spreadsheet:12345', :format => :csv).should be_kind_of(Tempfile)
+        Dewey.get('spreadsheet:12345').should_not be_nil
       end
     end
     
