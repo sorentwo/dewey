@@ -1,6 +1,7 @@
 module Dewey
   
   DOCUMENT_EXPORT_FORMATS     = [:txt, :odt, :pdf, :html, :rtf, :doc, :png, :zip]
+  DRAWING_EXPORT_FORMATS      = [:jpeg, :pdf, :png, :svg]
   PRESENTATION_EXPORT_FORMATS = [:swf, :pdf, :png, :ppt]
   SPREADSHEET_EXPORT_FORMATS  = [:xls, :csv, :pdf, :ods, :tsv, :html]
   
@@ -24,6 +25,7 @@ module Dewey
 
         case service
         when :document     then Dewey::DOCUMENT_MIMETYPES.has_key?(format)
+        when :drawing      then Dewey::DRAWING_MIMETYPES.has_key?(format)
         when :presentation then Dewey::PRESENTATION_MIMETYPES.has_key?(format)
         when :spreadsheet  then Dewey::SPREADSHEET_MIMETYPES.has_key?(format)
         else
@@ -46,6 +48,7 @@ module Dewey
 
         case service
         when :document     then Dewey::DOCUMENT_EXPORT_FORMATS.include?(format)
+        when :drawing      then Dewey::DRAWING_EXPORT_FORMATS.include?(format)
         when :presentation then Dewey::PRESENTATION_EXPORT_FORMATS.include?(format)
         when :spreadsheet  then Dewey::SPREADSHEET_EXPORT_FORMATS.include?(format)
         else
