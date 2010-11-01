@@ -266,7 +266,7 @@ module Dewey
     # @return [Array]  Array of document ids
     def extract_ids(response) #:nodoc:
       xml = REXML::Document.new(response)
-      xml.elements.collect('//id') { |e| e.text.gsub('%3A', ':') }.reject(&:blank?)
+      xml.elements.collect('//entry//id') { |e| e.text.gsub('%3A', ':') }.reject(&:blank?)
     end
 
     # Is the string an id or a search query?

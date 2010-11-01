@@ -10,6 +10,10 @@
 
     - Add support for new style export options (exportFormat & format)
 
+  Bugfixes:
+  
+    - Fix search results pulling the feed id and not just the entry id
+
 ## 0.2.3 (October 30, 2010)
 
   Additions:
