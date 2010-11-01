@@ -11,6 +11,12 @@ module Dewey
     :sxw  => 'application/vnd.sun.xml.writer',
     :txt  => 'text/plain'
   }
+
+  DRAWING_MIMETYPES = {
+    :jpeg => 'image/jpeg',
+    :png  => 'image/png',
+    :svg  => 'image/svg+xml'
+  }
   
   PRESENTATION_MIMETYPES = {
     :pps => 'application/vnd.ms-powerpoint',
@@ -36,13 +42,16 @@ module Dewey
       when /csv/  then SPREADSHEET_MIMETYPES[:csv]
       when /doc$/ then DOCUMENT_MIMETYPES[:doc]
       when /docx/ then DOCUMENT_MIMETYPES[:docx]
+      when /jpeg/ then DRAWING_MIMETYPES[:jpeg]
       when /htm/  then DOCUMENT_MIMETYPES[:html]
       when /ods/  then SPREADSHEET_MIMETYPES[:ods]
       when /odt/  then DOCUMENT_MIMETYPES[:odt]
       when /pdf/  then DOCUMENT_MIMETYPES[:pdf]
+      when /png/  then DRAWING_MIMETYPES[:png]
       when /pps/  then PRESENTATION_MIMETYPES[:pps]
       when /ppt/  then PRESENTATION_MIMETYPES[:ppt]
       when /rtf/  then DOCUMENT_MIMETYPES[:rtf]
+      when /svg/  then DRAWING_MIMETYPES[:svg]
       when /sxw/  then DOCUMENT_MIMETYPES[:sxw]
       when /tab/  then SPREADSHEET_MIMETYPES[:tab]
       when /tsv/  then SPREADSHEET_MIMETYPES[:tsv]
@@ -66,6 +75,7 @@ module Dewey
     
     def self.guess_service(mime_type)
       services = { :document     => DOCUMENT_MIMETYPES,
+                   :drawing      => DRAWING_MIMETYPES,
                    :presentation => PRESENTATION_MIMETYPES,
                    :spreadsheet  => SPREADSHEET_MIMETYPES }
       
