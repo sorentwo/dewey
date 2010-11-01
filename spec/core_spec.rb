@@ -206,7 +206,7 @@ describe Dewey do
       end
 
       it "is able to download a spreadsheet" do
-        stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv&format=csv").
+        stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv").
           to_return(:body => sample_file('sample_spreadsheet.csv'))
         
         Dewey.get('spreadsheet:12345', :format => :csv).should be_kind_of(Tempfile)
