@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = "dewey"
 
   s.add_development_dependency "rspec"
+  s.add_development_dependency "webmock"
 
   s.files        = Dir.glob("{lib}/**/*") + %w(README.md CHANGELOG.md)
   s.require_path = 'lib'
