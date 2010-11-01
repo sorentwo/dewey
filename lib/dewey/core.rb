@@ -120,6 +120,8 @@ module Dewey
       when 'spreadsheet'
         url << GOOGLE_SPREADSHEET_URL
         url << "?key=#{id}"
+      else
+        raise DeweyException, "Invalid service: #{service}"
       end
 
       unless format.blank?
@@ -269,7 +271,7 @@ module Dewey
 
     # Is the string an id or a search query?
     def is_id?(string)
-      string.match(/^(document|drawing|presentation|spreadsheet):.+$/)
+      string.match(/^[a-z]+:.+$/)
     end
   end
 end

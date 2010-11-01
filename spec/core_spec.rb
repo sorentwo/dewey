@@ -60,18 +60,18 @@ describe Dewey do
     
     describe "#put" do
       before(:all) do
-        @png = sample_file 'invalid_type.png'
+        @psd = sample_file 'sample_drawing.psd'
         @txt = sample_file 'sample_document.txt'
         @spr = sample_file 'sample_spreadsheet.xls'
         @bad = sample_file 'bad_mimetype'
       end
       
       after(:all) do
-        [@png, @txt, @spr, @bad].map(&:close)
+        [@psd, @txt, @spr, @bad].map(&:close)
       end
     
       it "should raise when uploading unsupported file types" do
-        lambda { Dewey.put(@png) }.should raise_exception(Dewey::DeweyException)
+        lambda { Dewey.put(@psd) }.should raise_exception(Dewey::DeweyException)
       end
       
       it "should raise when uploading a document with a bad mimetype" do
@@ -224,6 +224,10 @@ describe Dewey do
           to_return(:body => sample_file('sample_spreadsheet.csv'))
         
         Dewey.get('spreadsheet:12345').should_not be_nil
+      end
+
+      it "raises when using an unrecognized resourceID" do
+        lambda { Dewey.get('video:12345') }.should raise_exception(Dewey::DeweyException)
       end
     end
     
