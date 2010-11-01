@@ -118,7 +118,7 @@ module Dewey
 
       unless format.blank?
         if Dewey::Validation.valid_export_format?(format, service)
-          url << "&exportFormat=#{format}" unless format.blank?
+          url << "&exportFormat=#{format}&format=#{format}" unless format.blank?
         else
           raise DeweyException, "Invalid format: #{format}" 
         end
