@@ -15,7 +15,7 @@ Let Google do all of the hard work of converting your documents!
 
 Dewey is in alpha. It is not recommended you use this in production code.
 
-## Authorization
+## Authentication
 
 You can configure Dewey to connect with either ClientLogin or OAuth. If you choose
 OAuth you'll only have to authenticate the first time you connect and subsequent
@@ -23,11 +23,11 @@ connections will use the saved token.
 
 ClientLogin
 
-    Dewey.authorization :client, :email => 'example@gmail.com', :password => 'password'
-    
+    Dewey.authentication :client, :email => 'example@gmail.com', :password => 'password'
+
 OAuth
 
-    Dewey.authorization :oauth, :idontknowwhatgoeshereyet
+    Dewey.authentication :oauth, :idontknowwhatgoeshereyet
 
 ## File Operations
 

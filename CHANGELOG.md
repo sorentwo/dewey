@@ -1,3 +1,15 @@
+## 0.2.4 (November 1, 2010)
+  
+  Additions:
+    
+    - Support downloading drawings
+    - Support downloading presentations
+    - Drawing mime support and validation
+
+  Changes:
+
+    - Add support for new style export options (exportFormat & format)
+
 ## 0.2.3 (October 30, 2010)
 
   Additions:
