@@ -58,7 +58,7 @@ module Dewey
     # @option options [Symbol] :title An alternative title, to be used instead
     #                                 of the filename
     # 
-    # @return [String, Boolean] The id if upload was successful, false otherwise
+    # @return [String, nil] The id if upload was successful, nil otherwise
     def put(file, options = {})
       extension = File.extname(file.path).sub('.', '')
       basename  = File.basename(file.path, ".#{extension}")
@@ -81,8 +81,12 @@ module Dewey
       if response.kind_of?(Net::HTTPCreated)
         extract_ids(response.body).first
       else
-        false
+        nil
       end
+    end
+
+    def put!(file, options = {})
+      put(file, options) || raise(DeweyException, "Unable to put document")
     end
 
     # Download a file. You may optionally specify a format for export.

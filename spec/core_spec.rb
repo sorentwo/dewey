@@ -78,6 +78,12 @@ describe Dewey do
         lambda { Dewey.put(@bad) }.should raise_exception(Dewey::DeweyException)
       end
 
+      it "should return nil on a failed request" do
+        stub_request(:post, Dewey::GOOGLE_FEED_URL).to_return(:status => 300)
+
+        Dewey.put(@txt).should be_nil
+      end
+
       it "get a resource id after putting a document" do
         stub_request(:post, Dewey::GOOGLE_FEED_URL).
           to_return(:status => 201, :body => "<feed><entry><id>https://docs.google.com/feeds/id/document:12345</id></entry></feed>")
@@ -108,7 +114,20 @@ describe Dewey do
           with(:headers => { 'Content-Length' => @txt.size }).should have_been_made
       end
     end
-  
+
+    describe "#put!" do
+      before(:all) do
+        @txt = sample_file 'sample_document.txt'
+      end
+      
+      after(:all) { @txt.close }
+
+      it "raises an error on a failed request" do
+        stub_request(:post, Dewey::GOOGLE_FEED_URL).to_return(:status => 300)
+        lambda { Dewey.put!(@txt) }.should raise_exception(Dewey::DeweyException)
+      end
+    end
+
     describe "#delete" do
       it "deletes a resource from an id" do
         stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true")
