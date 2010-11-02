@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Parker Selbert"]
   s.email       = ["parker@sorentwo.com"]
   s.homepage    = %q{http://github.com/sorentwo/dewey}
-  s.summary     = "Google Docs fueled document conversion"
-  s.description = "Dewey is a no-frills tool for utilizing Google Docs ability to convert documents between formats"
+  s.summary     = "Simple Google Docs library."
+  s.description = "Light, simple Google Docs library for Ruby."
 
   s.required_rubygems_version = ">= 1.3.6"
   s.rubyforge_project         = "dewey"

@@ -1,15 +1,17 @@
     :::::::::  :::::::::: :::       ::: :::::::::: :::   ::: 
     :+:    :+: :+:        :+:       :+: :+:        :+:   :+: 
-    +:+    +:+ +:+        +:+       +:+ +:+         +:+ +:+  
-    +#+    +:+ +#++:++#   +#+  +:+  +#+ +#++:++#     +#++:   
-    +#+    +#+ +#+        +#+ +#+#+ +#+ +#+           +#+    
-    #+#    #+# #+#         #+#+# #+#+#  #+#           #+#    
+    +:+    +:+ +:+        +:+       +:+ +:+         +:+ +:+
+    +#+    +:+ +#++:++#   +#+  +:+  +#+ +#++:++#     +#++:
+    +#+    +#+ +#+        +#+ +#+#+ +#+ +#+           +#+
+    #+#    #+# #+#         #+#+# #+#+#  #+#           #+#
     #########  ##########   ###   ###   ##########    ###
 
-Dewey allows you to simply upload, download and delete files from your Google
-Docs account.
 
-Let Google do all of the hard work of converting your documents!
+# Light, simple Google Docs library for Ruby.
+
+Dewey focuses on the simple cases of authorizing, searching, and managing the
+files on a Google Docs account. Really, it stemmed from the need to use Docs
+great document conversion services.
 
 ## Note
 
