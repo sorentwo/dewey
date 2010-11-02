@@ -1,10 +1,11 @@
-## 0.2.4 (November 1, 2010)
+## 0.2.4 (November 2, 2010)
   
   Additions:
     
     - Support downloading drawings
     - Support downloading presentations
     - Drawing mime support and validation
+    - put! method to raise on failed requests
 
   Changes:
 
@@ -13,6 +14,8 @@
   Bugfixes:
   
     - Fix search results pulling the feed id and not just the entry id
+    - Fix entries pulling the feed along with the resource id
+    - Remove calls to blank?
 
 ## 0.2.3 (October 30, 2010)
 
