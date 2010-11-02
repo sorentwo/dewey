@@ -245,6 +245,20 @@ describe Dewey do
         Dewey.get('spreadsheet:12345').should_not be_nil
       end
 
+      it "should download a single spreadsheet format sheet" do
+        stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345&exportFormat=csv&gid=1").
+          to_return(:body => sample_file('sample_spreadsheet.csv'))
+
+        Dewey.get('spreadsheet:12345', :format => :csv, :sheet => 1).should_not be_nil
+      end
+
+      it "should not download a full spreadsheet sheet" do
+        stub_request(:get, "#{Dewey::GOOGLE_SPREADSHEET_URL}?key=12345").
+          to_return(:body => sample_file('sample_spreadsheet.xls'))
+        
+        Dewey.get('spreadsheet:12345', :sheet => 1).should_not be_nil
+      end
+
       it "raises when using an unrecognized resourceID" do
         lambda { Dewey.get('video:12345') }.should raise_exception(Dewey::DeweyException)
       end

@@ -134,7 +134,8 @@ module Dewey
       unless format.empty?
         if Dewey::Validation.valid_export_format?(format, service)
           url << "&exportFormat=#{format}"
-          url << "&format=#{format}" if service == 'document'
+          url << "&format=#{format}"       if service == 'document'
+          url << "&gid=#{options[:sheet]}" if service == 'spreadsheet' && options[:sheet]
         else
           raise DeweyException, "Invalid format: #{format}" 
         end
