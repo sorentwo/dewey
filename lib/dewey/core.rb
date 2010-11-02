@@ -45,7 +45,7 @@ module Dewey
       headers  = base_headers(false)
       url      = "#{GOOGLE_FEED_URL}?title=#{title}"
       url     << "&title-exact=true" if options[:exact]
-      response = get_request(url, headers)
+      response = http_request(:get, url, headers)
       
       response.kind_of?(Net::HTTPOK) ? extract_ids(response.body) : []
     end
@@ -76,7 +76,7 @@ module Dewey
       # Rewind the file in the case of multiple uploads, or conversions
       file.rewind
   
-      response = post_request(GOOGLE_FEED_URL, file.read.to_s, headers)
+      response = http_request(:post, GOOGLE_FEED_URL, headers, file.read.to_s)
  
       if response.kind_of?(Net::HTTPCreated)
         extract_ids(response.body).first
@@ -85,6 +85,9 @@ module Dewey
       end
     end
 
+    # The same as `put`, except it will raise an exception if the request fails.
+    #
+    # @see put
     def put!(file, options = {})
       put(file, options) || raise(DeweyException, "Unable to put document")
     end
@@ -137,7 +140,7 @@ module Dewey
         end
       end
 
-      response = get_request(url, base_headers)
+      response = http_request(:get, url, base_headers)
       
       if response.kind_of?(Net::HTTPOK)
         file = Tempfile.new([id, format].join('.'))
@@ -171,7 +174,7 @@ module Dewey
       url   = "#{GOOGLE_FEED_URL}/#{Dewey::Utils.escape(id)}"
       url << "?delete=true" unless trash
 
-      response = delete_request(url, headers)
+      response = http_request(:delete, url, headers)
   
       response.kind_of?(Net::HTTPOK)
     end
@@ -220,18 +223,6 @@ module Dewey
 
     protected
    
-    def get_request(url, headers) #:nodoc:
-      http_request(:get, url, headers)
-    end
-
-    def post_request(url, data, headers) #:nodoc:
-      http_request(:post, url, headers, data)
-    end
-
-    def delete_request(url, headers) #:nodoc:
-      http_request(:delete, url, headers)
-    end
-
     def http_request(method, url, headers, data = nil) #:nodoc:      
       url = URI.parse(url) if url.kind_of? String
 
