@@ -1,3 +1,7 @@
+## 0.2.6 (November 3, 2010)
+  
+  * Downloaded files are automatically rewound
+
 ## 0.2.5 (November 3, 2010)
     
   * Sheet (gid) support for spreadsheets
