@@ -174,6 +174,12 @@ describe Dewey do
         Dewey.get('document:12345').should be_kind_of(Tempfile)
       end
 
+      it "returns the tempfile at position 0" do
+        stub_request(:get, /.*/).to_return(:body => sample_file('sample_document.txt'))
+        
+        Dewey.get('document:12345').read.should eq(sample_file('sample_document.txt').read)
+      end
+
       it "downloads a document by id" do
         stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
           to_return(:body => sample_file('sample_document.txt'))

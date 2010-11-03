@@ -147,6 +147,7 @@ module Dewey
         file = Tempfile.new([id, format].join('.'))
         file.binmode
         file.write(response.body)
+        file.rewind
         file
       else
         nil
