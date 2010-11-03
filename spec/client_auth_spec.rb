@@ -45,13 +45,16 @@ describe Dewey::ClientAuth do
     client_auth.authenticated?.should be_true
   end
   
-  it "can scope authentication" do
-    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345').times(2)
+  it "can scope authentication to writely" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
     
-    client_auth.authenticate!(:writely)
-    client_auth.authenticate!(:wise)
-    
+    client_auth.authenticate!(:writely) 
     client_auth.authenticated?(:writely).should be_true
+  end
+
+  it "can scope authentication to wise" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
+    client_auth.authenticate!(:wise)
     client_auth.authenticated?(:wise).should be_true
   end
   
@@ -60,5 +63,15 @@ describe Dewey::ClientAuth do
     client_auth.authenticate!(:writely)
     
     client_auth.token(:writely).should eq('12345')
+  end
+
+  it "authorizes automatically when a token is requested" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
+    client_auth.token(:wise).should eq('12345')
+  end
+
+  it "can access a token from a string" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
+    client_auth.token('writely').should eq('12345') 
   end
 end

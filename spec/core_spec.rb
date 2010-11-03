@@ -6,33 +6,18 @@ describe Dewey do
       Dewey.authentication :client, :email => 'example', :password => 'password'
       Dewey.authenticated?.should be_false 
     end
-    
-    it "automatically authenticates when required" do
-      stub_request(:post, Dewey::GOOGLE_FEED_URL)
-      Dewey.stub(:authenticate!).and_return(true)
-      Dewey.should_receive(:authenticate!)
-      Dewey.put(sample_file('sample_document.txt'))
-    end
   end
   
   describe "Constructing Headers" do
-    it "does not set Authorization headers without authentication" do
-      Dewey.send(:base_headers).should_not have_key('Authorization')
-    end
-    
-    it "has Authorization headers with authentication" do
-      Dewey.stub(:authenticated?).and_return(true)
-      Dewey.send(:base_headers).should have_key('Authorization')
-    end
-
     it "can omit content-type" do
+      Dewey.stub_chain(:authenticator, :token).and_return('12345')
       Dewey.send(:base_headers, false).should_not have_key('Content-Type')
     end
   end
   
   describe "File Operations" do
     before(:each) do
-      Dewey.stub(:authenticated?).and_return(true)
+      Dewey.stub_chain(:authenticator, :token).and_return('12345')
     end
    
     describe "#search" do

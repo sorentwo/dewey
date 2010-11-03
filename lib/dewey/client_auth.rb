@@ -41,7 +41,9 @@ module Dewey
     end
     
     def token(service = nil)
-      @authentications[service || :writely]
+      service = service.nil? ? :writely : service.to_sym
+      authenticate!(service) unless authenticated?(service)
+      @authentications[service]
     end
   end
 end

@@ -30,7 +30,7 @@ module Dewey
     def authenticate!
       @@authenticator.authenticate!
     end
-   
+
     # Queries the document list for a particular title. Titles can be either 
     # full or partial matches. Matches are returned as an array of ids.
     #
@@ -141,7 +141,7 @@ module Dewey
         end
       end
 
-      response = http_request(:get, url, base_headers)
+      response = http_request(:get, url, base_headers(true, service))
       
       if response.kind_of?(Net::HTTPOK)
         file = Tempfile.new([id, format].join('.'))
@@ -188,18 +188,6 @@ module Dewey
       delete(query, options) || raise(DeweyException, "Unable to delete document")
     end
 
-    [:search, :put, :get, :delete].each do |method|
-      aliased = "no_auto_authenticate_#{method.to_s}".to_sym 
-      alias_method aliased, method
-      
-      self.class_eval(%Q{
-        def #{method} *args
-          authenticate! unless authenticated?
-          #{aliased}(*args)
-        end
-      })
-    end
-
     # Convenience method for `put`, `get`, `delete`.
     #
     # @param [File] file The file that will be converted
@@ -223,7 +211,12 @@ module Dewey
     end
 
     protected
-   
+
+    # Present for simplified testing
+    def authenticator #:nodoc:
+      @@authenticator
+    end
+
     def http_request(method, url, headers, data = nil) #:nodoc:      
       url = URI.parse(url) if url.kind_of? String
 
@@ -247,11 +240,11 @@ module Dewey
     #
     # @param [Boolean] form If true the Content-Type will be set accordingly
     # @return [Hash] Headers hash
-    def base_headers(form = true) #:nodoc:
+    def base_headers(form = true, service = nil) #:nodoc:
       base = {}
       base['GData-Version'] = '3.0'
       base['Content-Type']  = 'application/x-www-form-urlencoded'         if form
-      base['Authorization'] = "GoogleLogin auth=#{@@authenticator.token}" if authenticated?
+      base['Authorization'] = "GoogleLogin auth=#{authenticator.token(service)}"
   
       base
     end
