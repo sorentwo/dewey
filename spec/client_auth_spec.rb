@@ -74,4 +74,9 @@ describe Dewey::ClientAuth do
     stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
     client_auth.token('writely').should eq('12345') 
   end
+
+  it "will correctly map spreadsheets to wise" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
+    client_auth.token('spreadsheets').should eq('12345') 
+  end
 end

@@ -41,9 +41,20 @@ module Dewey
     end
     
     def token(service = nil)
-      service = service.nil? ? :writely : service.to_sym
+      service = guard(service)
       authenticate!(service) unless authenticated?(service)
       @authentications[service]
+    end
+
+    private
+
+    def guard(service)
+      case service
+      when nil           then :writely
+      when 'spreadsheet' then :wise
+      else
+        service.to_sym
+      end
     end
   end
 end
