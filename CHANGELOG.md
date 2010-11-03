@@ -1,3 +1,9 @@
+## 0.2.5 (November 3, 2010)
+    
+  * Sheet (gid) support for spreadsheets
+  * Delegate authentication, more reliable and no need for eval + alias_method
+  * Fix spreadsheet calls not authenticating
+
 ## 0.2.4 (November 2, 2010)
   
   Additions:
