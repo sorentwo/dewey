@@ -36,7 +36,7 @@ module Dewey
       when Net::HTTPForbidden
         false
       else
-        raise DeweyAuthorizationException, "Unexpected response: #{response}"
+        raise DeweyError, "Unexpected response: #{response}"
       end
     end
     

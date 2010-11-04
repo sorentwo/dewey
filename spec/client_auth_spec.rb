@@ -38,6 +38,12 @@ describe Dewey::ClientAuth do
     client_auth.authenticate!.should be_false
   end
 
+  it "raises when it gets a wacky response" do
+    stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:status => 500)
+
+    lambda { client_auth.authenticate! }.should raise_exception(Dewey::DeweyError)
+  end
+
   it "is authenticated with one service" do
     stub_http_request(:post, Dewey::GOOGLE_LOGIN_URL).to_return(:body => '=12345')
     client_auth.authenticate!

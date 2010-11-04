@@ -9,8 +9,8 @@ module Dewey
   GOOGLE_PRESENTATION_URL = GOOGLE_DOCS_URL + "/feeds/download/presentations/Export"
   GOOGLE_SPREADSHEET_URL  = GOOGLE_SPRD_URL + "/feeds/download/spreadsheets/Export"
   
-  class DeweyException < Exception; end
-  class DeweyAuthorizationException < Exception; end
+  class DeweyError < StandardError; end
+  class DeweyAuthorizationError < StandardError; end
 end
 
 require 'dewey/core'

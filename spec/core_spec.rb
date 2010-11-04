@@ -56,11 +56,11 @@ describe Dewey do
       end
     
       it "should raise when uploading unsupported file types" do
-        lambda { Dewey.put(@psd) }.should raise_exception(Dewey::DeweyException)
+        lambda { Dewey.put(@psd) }.should raise_exception(Dewey::DeweyError)
       end
       
       it "should raise when uploading a document with a bad mimetype" do
-        lambda { Dewey.put(@bad) }.should raise_exception(Dewey::DeweyException)
+        lambda { Dewey.put(@bad) }.should raise_exception(Dewey::DeweyError)
       end
 
       it "should return nil on a failed request" do
@@ -109,7 +109,7 @@ describe Dewey do
 
       it "raises an error on a failed request" do
         stub_request(:post, Dewey::GOOGLE_FEED_URL).to_return(:status => 300)
-        lambda { Dewey.put!(@txt) }.should raise_exception(Dewey::DeweyException)
+        lambda { Dewey.put!(@txt) }.should raise_exception(Dewey::DeweyError)
       end
     end
 
@@ -154,7 +154,7 @@ describe Dewey do
     describe "#delete!" do
       it "raises an error when a resource can't be found" do
         stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true").to_return(:status => 300)
-        lambda { Dewey.delete!('document:12345') }.should raise_exception(Dewey::DeweyException)
+        lambda { Dewey.delete!('document:12345') }.should raise_exception(Dewey::DeweyError)
       end
 
       it "doesn't delete with the trash option" do
@@ -165,7 +165,7 @@ describe Dewey do
 
     describe "#get" do 
       it "raises with an invalid format" do
-        lambda { Dewey.get('document:12345', :format => :psd) }.should raise_exception(Dewey::DeweyException)
+        lambda { Dewey.get('document:12345', :format => :psd) }.should raise_exception(Dewey::DeweyError)
       end
 
       it "returns a tempfile" do
@@ -251,7 +251,7 @@ describe Dewey do
       end
 
       it "raises when using an unrecognized resourceID" do
-        lambda { Dewey.get('video:12345') }.should raise_exception(Dewey::DeweyException)
+        lambda { Dewey.get('video:12345') }.should raise_exception(Dewey::DeweyError)
       end
     end
     

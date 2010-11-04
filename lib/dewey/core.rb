@@ -66,7 +66,7 @@ module Dewey
       service   = Dewey::Mime.guess_service(mimetype)
       title     = options[:title] || basename
   
-      raise DeweyException, "Invalid file type: #{extension}" unless Dewey::Validation.valid_upload_format?(extension, service)
+      raise DeweyError, "Invalid file type: #{extension}" unless Dewey::Validation.valid_upload_format?(extension, service)
   
       headers = base_headers
       headers['Content-Length'] = File.size?(file).to_s
@@ -89,7 +89,7 @@ module Dewey
     #
     # @see put
     def put!(file, options = {})
-      put(file, options) || raise(DeweyException, "Unable to put document")
+      put(file, options) || raise(DeweyError, "Unable to put document")
     end
 
     # Download a file. You may optionally specify a format for export.
@@ -128,7 +128,7 @@ module Dewey
         url << GOOGLE_SPREADSHEET_URL
         url << "?key=#{id}"
       else
-        raise DeweyException, "Invalid service: #{service}"
+        raise DeweyError, "Invalid service: #{service}"
       end
 
       unless format.empty?
@@ -137,7 +137,7 @@ module Dewey
           url << "&format=#{format}"       if service == 'document'
           url << "&gid=#{options[:sheet]}" if service == 'spreadsheet' && options[:sheet]
         else
-          raise DeweyException, "Invalid format: #{format}" 
+          raise DeweyError, "Invalid format: #{format}" 
         end
       end
 
@@ -181,12 +181,12 @@ module Dewey
       response.kind_of?(Net::HTTPOK)
     end
     
-    # The same as delete, except that it will raise `Dewey::DeweyException` if
+    # The same as delete, except that it will raise `Dewey::DeweyError` if
     # the request fails.
     # 
     # @see #delete
     def delete!(query, options = {})
-      delete(query, options) || raise(DeweyException, "Unable to delete document")
+      delete(query, options) || raise(DeweyError, "Unable to delete document")
     end
 
     # Convenience method for `put`, `get`, `delete`.
@@ -233,7 +233,7 @@ module Dewey
       when :delete
         connection.delete(full_path, headers)
       else
-        raise DeweyException, "Invalid request type. Valid options are :get, :post and :delete"
+        raise DeweyError, "Invalid request type. Valid options are :get, :post and :delete"
       end
     end
 
