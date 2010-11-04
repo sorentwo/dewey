@@ -18,7 +18,7 @@ module Dewey
       #
       # @return [Boolean] `true` if the format is supported, `false` otherwise
       #
-      # @raise [DeweyException] Raised when an unknown service is given
+      # @raise [DeweyError] Raised when an unknown service is given
       def valid_upload_format?(format, service = nil)
         format  = format.to_sym
         service = default_service(service)
@@ -29,7 +29,7 @@ module Dewey
         when :presentation then Dewey::PRESENTATION_MIMETYPES.has_key?(format)
         when :spreadsheet  then Dewey::SPREADSHEET_MIMETYPES.has_key?(format)
         else
-          raise DeweyException, "Unknown service: #{service}"
+          raise DeweyError, "Unknown service: #{service}"
         end
       end
 
@@ -41,7 +41,7 @@ module Dewey
       #
       # @return [Boolean] `true` if the format is supported, `false` otherwise
       #
-      # @raise [DeweyException] Raised when an unknown service is given
+      # @raise [DeweyError] Raised when an unknown service is given
       def valid_export_format?(format, service = nil)
         format  = format.to_sym
         service = default_service(service) 
@@ -52,7 +52,7 @@ module Dewey
         when :presentation then Dewey::PRESENTATION_EXPORT_FORMATS.include?(format)
         when :spreadsheet  then Dewey::SPREADSHEET_EXPORT_FORMATS.include?(format)
         else
-          raise DeweyException, "Unknown service: #{service}"
+          raise DeweyError, "Unknown service: #{service}"
         end
       end
 

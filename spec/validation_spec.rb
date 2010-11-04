@@ -22,7 +22,7 @@ describe Dewey::Validation do
   end
 
   it "should raise when given an invalid upload service" do
-    lambda { Dewey::Validation.valid_upload_format?(:ical, :cl) }.should raise_exception(Dewey::DeweyException)
+    lambda { Dewey::Validation.valid_upload_format?(:ical, :cl) }.should raise_exception(Dewey::DeweyError)
   end
 
   it "should return true for valid export formats" do
@@ -40,6 +40,6 @@ describe Dewey::Validation do
   end
 
   it "should raise when given an invalid export service" do
-    lambda { Dewey::Validation.valid_export_format?(:ical, :cl) }.should raise_exception(Dewey::DeweyException)
+    lambda { Dewey::Validation.valid_export_format?(:ical, :cl) }.should raise_exception(Dewey::DeweyError)
   end
 end
