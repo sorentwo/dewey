@@ -19,17 +19,13 @@ Dewey is in alpha. It is not recommended you use this in production code.
 
 ## Authentication
 
-You can configure Dewey to connect with either ClientLogin or OAuth. If you choose
-OAuth you'll only have to authenticate the first time you connect and subsequent
-connections will use the saved token.
+You can configure Dewey to connect with ClientLogin. 
 
 ClientLogin
 
     Dewey.authentication :client, :email => 'example@gmail.com', :password => 'password'
 
-OAuth
-
-    Dewey.authentication :oauth, :idontknowwhatgoeshereyet
+AuthSub and OAuth support is planned for a future release.
 
 ## File Operations
 
@@ -72,10 +68,19 @@ A tempfile is returned, so you'll have to move it
 
     FileUtils.mv html.path, 'path/to/destination'
 
-Getting a document by title. Unmatched searches return nil
+Getting a document by title. Since only one file will be returned at a time you
+must use an exact match.
 
     Dewey.get('My Document') #=> Tempfile
     Dewey.get('No Match')    #=> nil
+
+Other file types are supported as well, including spreadsheets, drawings and
+presentations:
+
+    Dewey.get('Mine')               #=> ['presentation:12345', 'spreadsheet:12345', 'drawing:12345']
+    Dewey.get('presentation:12345') #=> Tempfile
+    Dewey.get('spreadsheet:12345')  #=> Tempfile
+    Dewey.get('drawing:12345')      #=> Tempfile
 
 ### Deleting a Document
 
