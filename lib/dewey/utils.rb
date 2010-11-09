@@ -1,19 +1,17 @@
 module Dewey
   module Utils #:nodoc:
-    # Performs URI escaping. (Stolen from Camping via Rake).
-    def escape(s)
-      s.to_s.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
-        '%'+$1.unpack('H2' * bytesize($1)).join('%').upcase
-      }.tr(' ', '+')
+    # Perform string escaping for Atom slugs
+    def slug(string)
+      string.chars.to_a.map do |char|
+        decimal = char.unpack('U').join('')
+        if decimal < 32 || decimal > 126 || decimal == 37
+          char = "%#{char.unpack('H2').join('%').upcase}"
+        end
+
+        char
+      end.join('')
     end
-    
-    module_function :escape
-    
-    # Return the bytesize of String; uses String#length under Ruby 1.8
-     def bytesize(string)
-       string.bytesize
-     end
-     
-     module_function :bytesize
+
+    module_function :slug
   end
 end

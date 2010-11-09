@@ -70,7 +70,7 @@ module Dewey
   
       headers = base_headers
       headers['Content-Length'] = File.size?(file).to_s
-      headers['Slug']           = Dewey::Utils.escape(title)
+      headers['Slug']           = Dewey::Utils.slug(title)
       headers['Content-Type']   = mimetype unless mimetype =~ /Can't expand summary_info/
   
       # Rewind the file in the case of multiple uploads, or conversions
@@ -173,7 +173,7 @@ module Dewey
       
       return false if id.nil?
 
-      url   = "#{GOOGLE_FEED_URL}/#{Dewey::Utils.escape(id)}"
+      url   = "#{GOOGLE_FEED_URL}/#{URI.escape(id)}"
       url << "?delete=true" unless trash
 
       response = http_request(:delete, url, headers)
