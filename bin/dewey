@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.dirname(__FILE__) + '/../lib'
+require 'dewey/command'
+
+Dewey::Command.new(ARGV).run($stdout, $stderr)
