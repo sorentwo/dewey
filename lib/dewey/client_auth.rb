@@ -51,6 +51,7 @@ module Dewey
     def guard(service)
       case service
       when nil           then :writely
+      when 'document'    then :writely
       when 'spreadsheet' then :wise
       else
         service.to_sym
