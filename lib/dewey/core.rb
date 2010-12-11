@@ -244,7 +244,7 @@ module Dewey
     def base_headers(form = true, service = nil) #:nodoc:
       base = {}
       base['GData-Version'] = '3.0'
-      base['Content-Type']  = 'application/x-www-form-urlencoded'         if form
+      base['Content-Type']  = 'application/x-www-form-urlencoded' if form
       base['Authorization'] = "GoogleLogin auth=#{authenticator.token(service)}"
   
       base
@@ -261,7 +261,7 @@ module Dewey
 
     # Is the string an id or a search query?
     def is_id?(string)
-      string.match(/^[a-z]+:.+$/)
+      !!string.match(/^[a-z]+:.+$/)
     end
   end
 end
