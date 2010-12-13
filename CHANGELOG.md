@@ -1,3 +1,10 @@
+## 0.2.7 (December 12, 2010)
+
+  * Documents, Drawings and Presentations are actually downloadable again. The
+    Google Docs API documentation wasn't updated to reflect that the docID
+    param was now just id.
+  * Minor internal improvements
+
 ## 0.2.6 (November 3, 2010)
   
   * Downloaded files are automatically rewound
