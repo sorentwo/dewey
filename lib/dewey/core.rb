@@ -261,7 +261,7 @@ module Dewey
 
     # Is the string an id or a search query?
     def is_id?(string)
-      !!string.match(/^[a-z]+:.+$/)
+      string =~ /^[a-z]+:.+$/
     end
   end
 end
