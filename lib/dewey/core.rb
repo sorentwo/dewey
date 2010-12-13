@@ -117,13 +117,13 @@ module Dewey
       case service
       when 'document'
         url << GOOGLE_DOCUMENT_URL
-        url << "?docID=#{id}"
+        url << "?id=#{id}"
       when 'drawing'
         url << GOOGLE_DRAWING_URL
-        url << "?docID=#{id}"
+        url << "?id=#{id}"
       when 'presentation'
         url << GOOGLE_PRESENTATION_URL
-        url << "?docID=#{id}"
+        url << "?id=#{id}"
       when 'spreadsheet'
         url << GOOGLE_SPREADSHEET_URL
         url << "?key=#{id}"

@@ -26,21 +26,21 @@ describe "Dewey.get" do
   end
 
   it "downloads a document by id" do
-    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
+    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?id=12345").
       to_return(:body => sample_file('sample_document.txt'))
     
     Dewey.get('document:12345').should_not be_nil
   end
   
   it "sets the export format when format is provided" do
-    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345&exportFormat=doc&format=doc").
+    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?id=12345&exportFormat=doc&format=doc").
       to_return(:body => sample_file('sample_document.doc'))
     
     Dewey.get('document:12345', :format => :doc).should_not be_nil
   end
 
   it "returns nil when the id can't be found" do
-    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
+    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?id=12345").
       to_return(:status => 301)
 
     Dewey.get('document:12345').should be_nil
@@ -48,7 +48,7 @@ describe "Dewey.get" do
 
   it "downloads a document by title" do
     Dewey.should_receive(:search).with('My Document', { :exact => true }).and_return(['document:12345'])
-    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?docID=12345").
+    stub_request(:get, "#{Dewey::GOOGLE_DOCUMENT_URL}?id=12345").
       to_return(:body => sample_file('sample_document.doc'))
 
     Dewey.get('My Document').should_not be_nil
@@ -61,14 +61,14 @@ describe "Dewey.get" do
   end
 
   it "is able to download a drawing" do
-    stub_request(:get, "#{Dewey::GOOGLE_DRAWING_URL}?docID=12345").
+    stub_request(:get, "#{Dewey::GOOGLE_DRAWING_URL}?id=12345").
       to_return(:body => sample_file('sample_document.pdf'))
 
     Dewey.get('drawing:12345').should_not be_nil
   end
 
   it "is able to download a presentation" do
-    stub_request(:get, "#{Dewey::GOOGLE_PRESENTATION_URL}?docID=12345").
+    stub_request(:get, "#{Dewey::GOOGLE_PRESENTATION_URL}?id=12345").
       to_return(:body => sample_file('sample_document.pdf'))
 
     Dewey.get('presentation:12345').should_not be_nil
