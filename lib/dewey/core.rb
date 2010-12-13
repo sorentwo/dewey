@@ -144,8 +144,7 @@ module Dewey
       response = http_request(:get, url, base_headers(service))
       
       if response.kind_of?(Net::HTTPOK)
-        file = Tempfile.new([id, format].join('.'))
-        file.binmode
+        file = Tempfile.new([id, format].join('.')).binmode
         file.write(response.body)
         file.rewind
         file

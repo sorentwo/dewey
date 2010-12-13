@@ -7,16 +7,22 @@ describe "Dewey.get" do
     lambda { Dewey.get('document:12345', :format => :psd) }.should raise_exception(Dewey::DeweyError)
   end
 
-  it "returns a tempfile" do
-    stub_request(:get, /.*/).to_return(:body => sample_file('sample_document.txt'))
+  context 'Returning' do
+    before do
+      stub_request(:get, /.*/).to_return(:body => sample_file('sample_document.txt'))
+    end
 
-    Dewey.get('document:12345').should be_kind_of(Tempfile)
-  end
+    it "returns a type of file" do
+      Dewey.get('document:12345').should be_kind_of(File)
+    end
 
-  it "returns the tempfile at position 0" do
-    stub_request(:get, /.*/).to_return(:body => sample_file('sample_document.txt'))
-    
-    Dewey.get('document:12345').read.should eq(sample_file('sample_document.txt').read)
+    it "returns the tempfile at position 0" do
+      Dewey.get('document:12345').pos.should be_zero
+    end
+
+    it "returns an exact copy of the body" do
+      Dewey.get('document:12345').read.should eq(sample_file('sample_document.txt').read)
+    end
   end
 
   it "downloads a document by id" do
