@@ -92,4 +92,13 @@ describe "Dewey.get" do
   it "raises when using an unrecognized resourceID" do
     lambda { Dewey.get('video:12345') }.should raise_exception(Dewey::DeweyError)
   end
+
+  it 'does not set the content type' do
+    stub_request(:get, /.*/).to_return(:body => sample_file('sample_document.txt'))
+
+    Dewey.get('document:12345')
+
+    a_request(:get, /.*/).
+      with(:headers => { 'Content-Type' => 'application/x-www-form-urlencoded' }).should_not have_been_made
+  end
 end

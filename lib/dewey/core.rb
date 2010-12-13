@@ -42,7 +42,7 @@ module Dewey
     # @return [Array] An array of matched ids. No matches return an empty array
     def search(query, options = {})
       title    = query.gsub(/\s+/, '+')
-      headers  = base_headers(false)
+      headers  = base_headers
       url      = "#{GOOGLE_FEED_URL}?title=#{title}"
       url     << "&title-exact=true" if options[:exact]
       response = http_request(:get, url, headers)
@@ -141,7 +141,7 @@ module Dewey
         end
       end
 
-      response = http_request(:get, url, base_headers(true, service))
+      response = http_request(:get, url, base_headers(service))
       
       if response.kind_of?(Net::HTTPOK)
         file = Tempfile.new([id, format].join('.'))
@@ -167,7 +167,7 @@ module Dewey
     def delete(query, options = {})
 
       # We use 'If-Match' => '*' to make sure we delete regardless of others
-      headers = base_headers(false).merge({'If-Match' => '*'}) 
+      headers = base_headers.merge({'If-Match' => '*'}) 
       trash   = options.delete(:trash) || false
       id      = (is_id?(query)) ? query : search(query, :exact => true).first
       
@@ -218,6 +218,7 @@ module Dewey
       @@authenticator
     end
 
+    # Perform the actual request heavy lifting
     def http_request(method, url, headers, data = nil) #:nodoc:      
       url = URI.parse(url) if url.kind_of? String
 
@@ -229,22 +230,20 @@ module Dewey
       when :get
         connection.get(full_path, headers)
       when :post
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
         connection.post(full_path, data, headers)
       when :delete
         connection.delete(full_path, headers)
-      else
-        raise DeweyError, "Invalid request type. Valid options are :get, :post and :delete"
       end
     end
 
     # A hash of default headers. Considers authentication and put/post headers.
     #
-    # @param [Boolean] form If true the Content-Type will be set accordingly
+    # @param [String] service The document type or service eg. (document/writely)
     # @return [Hash] Headers hash
-    def base_headers(form = true, service = nil) #:nodoc:
+    def base_headers(service = nil) #:nodoc:
       base = {}
       base['GData-Version'] = '3.0'
-      base['Content-Type']  = 'application/x-www-form-urlencoded' if form
       base['Authorization'] = "GoogleLogin auth=#{authenticator.token(service)}"
   
       base

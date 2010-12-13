@@ -52,10 +52,20 @@ describe 'Dewey.put' do
 
   it "specifies the filesize in the header" do
     stub_request(:post, Dewey::GOOGLE_FEED_URL)
+
     Dewey.put(@txt)
 
     a_request(:post, Dewey::GOOGLE_FEED_URL).
       with(:headers => { 'Content-Length' => @txt.size }).should have_been_made
+  end
+
+  it 'sets the content type to x-www-form-urlencoded' do
+    stub_request(:post, Dewey::GOOGLE_FEED_URL)
+
+    Dewey.put(@txt)
+
+    a_request(:post, Dewey::GOOGLE_FEED_URL).
+      with(:headers => { 'Content-Type' => 'application/x-www-form-urlencoded' }).should have_been_made
   end
 end
 
