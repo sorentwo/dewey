@@ -25,7 +25,4 @@ rescue LoadError
   end
 end
 
-desc "Generate Documentation"
-task :doc => :yard
-
 task :default => :spec
