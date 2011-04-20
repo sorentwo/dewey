@@ -1,5 +1,5 @@
-    :::::::::  :::::::::: :::       ::: :::::::::: :::   ::: 
-    :+:    :+: :+:        :+:       :+: :+:        :+:   :+: 
+    :::::::::  :::::::::: :::       ::: :::::::::: :::   :::
+    :+:    :+: :+:        :+:       :+: :+:        :+:   :+:
     +:+    +:+ +:+        +:+       +:+ +:+         +:+ +:+
     +#+    +:+ +#++:++#   +#+  +:+  +#+ +#++:++#     +#++:
     +#+    +#+ +#+        +#+ +#+#+ +#+ +#+           +#+
@@ -15,11 +15,13 @@ great document conversion services.
 
 ## Note
 
-Dewey is in alpha. It is not recommended you use this in production code.
+Dewey is written against the Google Document List Data API v3, which is prone
+to changes without warning. Because of this I recommend you be careful when
+using this in production.
 
 ## Authentication
 
-You can configure Dewey to connect with ClientLogin. 
+You can configure Dewey to connect with ClientLogin.
 
 ClientLogin
 
