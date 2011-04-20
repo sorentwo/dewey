@@ -229,7 +229,6 @@ module Dewey
       when :get
         connection.get(full_path, headers)
       when :post
-        headers['Content-Type'] = 'application/x-www-form-urlencoded'
         connection.post(full_path, data, headers)
       when :delete
         connection.delete(full_path, headers)
