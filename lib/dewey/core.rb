@@ -60,7 +60,7 @@ module Dewey
     #
     # @return [String, nil] The id if upload was successful, nil otherwise
     def put(file, options = {})
-      extension = options[:extension] || File.extname(file.path).sub('.', '')
+      extension = Dewey::Mime.extension(file)
       basename  = File.basename(file.path, ".#{extension}")
       mimetype  = Dewey::Mime.mime_type(file)
       service   = Dewey::Mime.guess_service(mimetype)
