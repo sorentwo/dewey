@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Dewey.put' do
   before(:each) { stub_dewey_auth }
-  
+
   before(:all) do
     @psd = sample_file 'sample_drawing.psd'
     @txt = sample_file 'sample_document.txt'
@@ -17,7 +17,7 @@ describe 'Dewey.put' do
   it "should raise when uploading unsupported file types" do
     lambda { Dewey.put(@psd) }.should raise_exception(Dewey::DeweyError)
   end
-  
+
   it "should raise when uploading a document with a bad mimetype" do
     lambda { Dewey.put(@bad) }.should raise_exception(Dewey::DeweyError)
   end
@@ -31,14 +31,14 @@ describe 'Dewey.put' do
   it "get a resource id after putting a document" do
     stub_request(:post, Dewey::GOOGLE_FEED_URL).
       to_return(:status => 201, :body => "<feed><entry><id>https://docs.google.com/feeds/id/document:12345</id></entry></feed>")
-    
+
     Dewey.put(@txt).should eq('document:12345')
   end
-  
+
   it "get a resource id after putting a spreadsheet" do
     stub_request(:post, Dewey::GOOGLE_FEED_URL).
       to_return(:status => 201, :body => "<feed><entry><id>https://docs.google.com/feeds/id/spreadsheet:12345</id></entry></feed>")
-      
+
     Dewey.put(@spr).should eq('spreadsheet:12345')
   end
 

@@ -2,7 +2,7 @@ module Dewey
   class ClientAuth
     attr_reader :authentications
 
-    def initialize(email, password) 
+    def initialize(email, password)
       @email          = email
       @password       = password
       @authentications = {}
@@ -12,10 +12,10 @@ module Dewey
       if service
         @authentications.has_key?(service)
       else
-        @authentications.any? 
+        @authentications.any?
       end
     end
-    
+
     def authenticate!(service = nil)
       service ||= :writely
 
@@ -39,7 +39,7 @@ module Dewey
         raise DeweyError, "Unexpected response: #{response}"
       end
     end
-    
+
     def token(service = nil)
       service = guard(service)
       authenticate!(service) unless authenticated?(service)

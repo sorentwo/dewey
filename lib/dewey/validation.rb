@@ -1,14 +1,14 @@
 module Dewey
-  
+
   DOCUMENT_EXPORT_FORMATS     = [:txt, :odt, :pdf, :html, :rtf, :doc, :png, :zip]
   DRAWING_EXPORT_FORMATS      = [:jpeg, :pdf, :png, :svg]
   PRESENTATION_EXPORT_FORMATS = [:swf, :pdf, :png, :ppt]
   SPREADSHEET_EXPORT_FORMATS  = [:xls, :csv, :pdf, :ods, :tsv, :html]
-  
+
   # Utility methods to check that a format is accepted for a particular service
   #
   class Validation
-    
+
     class << self
       # Determine wether or not a format is available for download.
       #
@@ -44,7 +44,7 @@ module Dewey
       # @raise [DeweyError] Raised when an unknown service is given
       def valid_export_format?(format, service = nil)
         format  = format.to_sym
-        service = default_service(service) 
+        service = default_service(service)
 
         case service
         when :document     then Dewey::DOCUMENT_EXPORT_FORMATS.include?(format)
