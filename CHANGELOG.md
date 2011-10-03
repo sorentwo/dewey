@@ -1,3 +1,12 @@
+## 0.2.9 (October 2, 2011)
+
+  * Better support for files without an extension (Cory Schires)
+  * Don't fail when `docx` has a mime type of `application/zip` (Cory Schires)
+
+## 0.2.8 (April 19, 2011)
+
+  * Remove x-www-form-urlencoded header for compatiblity with latest API
+
 ## 0.2.7 (December 12, 2010)
 
   * Documents, Drawings and Presentations are actually downloadable again. The
@@ -6,19 +15,19 @@
   * Minor internal improvements
 
 ## 0.2.6 (November 3, 2010)
-  
+
   * Downloaded files are automatically rewound
 
 ## 0.2.5 (November 3, 2010)
-    
+
   * Sheet (gid) support for spreadsheets
   * Delegate authentication, more reliable and no need for eval + alias_method
   * Fix spreadsheet calls not authenticating
 
 ## 0.2.4 (November 2, 2010)
-  
+
   Additions:
-    
+
     - Support downloading drawings
     - Support downloading presentations
     - Drawing mime support and validation
@@ -29,7 +38,7 @@
     - Add support for new style export options (exportFormat & format)
 
   Bugfixes:
-  
+
     - Fix search results pulling the feed id and not just the entry id
     - Fix entries pulling the feed along with the resource id
     - Remove calls to blank?
@@ -37,13 +46,13 @@
 ## 0.2.3 (October 30, 2010)
 
   Additions:
-  
+
     - #delete and #delete! accept an optional :trash option to send a resource
       to the trash, rather than being fully deleted.
     - #get and #elete by title. Handles exact matches only.
-  
+
   Bugfixes:
-    
+
     - Not setting the :format option on #get no longers raises
 
 ## 0.2.2 (October 27, 2010)
@@ -70,28 +79,28 @@ Bugfixes:
 ## 0.2.0 (October 20, 2010)
 
 Additions:
-  
+
   - Class-wide authentication. You only have to set up authentication once and
     then utilize that in all successive calls.
   - All file operations are stateless (Dewey.put, Dewey.get, etc)
   - Store multiple authorizations simultaneously.
-  
+
 Changes:
 
   - Convert API change. Format is required, not an option.
   - No longer supports upload or download, instead use put or get.
 
 ## 0.1.4 (October 19, 2010)
-  
+
 Additions:
-  
+
   - Handle bad mimetypes.
   - Modular validation
   - Removed service option, needless.
   - Automatic implicit authorization, removes need to call authorize! manually.
 
 Bugfixes:
-  
+
   - Prevent peer certificate warnings in 1.9
   - Fixed id extraction regex that prevented resources with dashes or underscores
     from being pulled.
@@ -111,7 +120,7 @@ Features:
 Bugfixes:
 
   - Handle files with no extension
-  
+
 ---
 ## 0.1.1 (June 28, 2010)
 
