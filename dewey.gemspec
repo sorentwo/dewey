@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'dewey'
 
   s.add_development_dependency 'rake',    '~> 0.8.7'
-  s.add_development_dependency 'rspec',   '~> 2.3.0'
-  s.add_development_dependency 'webmock', '~> 1.4.0'
-  s.add_development_dependency 'yard',    '~> 0.6.8'
+  s.add_development_dependency 'rspec',   '~> 2.6.0'
+  s.add_development_dependency 'webmock', '~> 1.7.6'
+  s.add_development_dependency 'yard',    '~> 0.7.2'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {spec}/*`.split("\n")
