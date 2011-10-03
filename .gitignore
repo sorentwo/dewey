@@ -1,6 +1,7 @@
 Gemfile.lock
 *.gem
 .bundle
+vendor/*
 .yardoc/*
 doc/*
 TODO
