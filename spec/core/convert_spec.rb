@@ -7,10 +7,10 @@ describe "Dewey.convert" do
     @txt = sample_file 'sample_document.txt'
     @doc = sample_file 'sample_document.doc'
   end
-  
+
   it "should put, get, and delete" do
-    Dewey.should_receive(:put).with(@txt, 'sample').and_return('document:12345')
-    Dewey.should_receive(:get).with('document:12345', :doc).and_return(@doc)
+    Dewey.should_receive(:put).with(@txt, :title => 'sample').and_return('document:12345')
+    Dewey.should_receive(:get).with('document:12345', :format =>:doc).and_return(@doc)
     Dewey.should_receive(:delete).with('document:12345').and_return(true)
     Dewey.convert(@txt, :title => 'sample', :format => :doc).should be(@doc)
   end
