@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dewey.search" do
+describe Dewey, '#search' do
   before(:each) { stub_dewey_auth }
 
   it "can exactly match a single document" do

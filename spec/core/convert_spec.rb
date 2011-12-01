@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dewey.convert" do
+describe Dewey, '#convert' do
   let(:txt) { sample_file 'sample_document.txt' }
   let(:doc) { sample_file 'sample_document.doc' }
 
@@ -8,7 +8,7 @@ describe "Dewey.convert" do
     stub_dewey_auth
   end
 
-  it "should put, get, and delete" do
+  it "puts, gets, and then deletes" do
     # Put
     stub_request(:post, Dewey::GOOGLE_FEED_URL).
       to_return(:status => 201, :body => "<feed><entry><id>https://docs.google.com/feeds/id/document:12345</id></entry></feed>")

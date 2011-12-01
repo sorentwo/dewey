@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe "Dewey.get" do
-  before(:each) { stub_dewey_auth }
+describe Dewey, '#get' do
+  before { stub_dewey_auth }
 
   it "raises with an invalid format" do
     lambda { Dewey.get('document:12345', :format => :psd) }.should raise_exception(Dewey::DeweyError)

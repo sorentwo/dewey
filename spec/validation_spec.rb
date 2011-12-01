@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Dewey::Validation do
-
   it "should return true for valid upload formats" do
     Dewey::Validation.valid_upload_format?(:txt, :document).should be_true
     Dewey::Validation.valid_upload_format?(:svg, :drawing).should be_true

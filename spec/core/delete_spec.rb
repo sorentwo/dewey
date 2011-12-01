@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe "Dewey.delete" do
-  before(:each) { stub_dewey_auth }
+describe Dewey, '#delete' do
+  before { stub_dewey_auth }
 
   it "deletes a resource from an id" do
     stub_request(:delete, "#{Dewey::GOOGLE_FEED_URL}/document:12345?delete=true")
