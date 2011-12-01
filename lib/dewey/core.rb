@@ -202,8 +202,8 @@ module Dewey
     # @see #get
     # @see #delete
     def convert(file, options = {})
-      id = put(file, options[:title])
-      converted = get(id, options[:format])
+      id = put(file, options)
+      converted = get(id, options)
 
       delete(id)
 
