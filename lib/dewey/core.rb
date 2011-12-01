@@ -192,9 +192,9 @@ module Dewey
     #
     # @param [File] file The file that will be converted
     # @param [Hash] options Options for conversion
-    # @option options [Symbol] :title  The title that the file will be stored
-    #   under. Only useful if the conversion fails.
-    # @option options [Symbol] :format Format to convert to.
+    # @option options [Hash] Options including the title that the file will be
+    #   stored under. Only useful if the conversion fails.
+    # @option options [Hash] Options including the format to convert to.
     #
     # @return [Tempfile] The converted file
     #

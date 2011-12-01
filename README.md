@@ -103,3 +103,11 @@ Sending to the trash rather than deleting
 If you would prefer an error when deletion fails
 
     Dewey.delete!('My Document') #=> raise DeweyException
+
+### Converting a Document
+
+If you are just trying to convert from one format to another you can simply use
+the `convert` method, which is a simple wrapper around `put`, `get`, and `delete`:
+
+    textfile = File.new('my_document.txt')
+    tempfile = Dewey.convert(textfile, :format => :doc) #=> Tempfile
