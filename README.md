@@ -6,18 +6,18 @@
     #+#    #+# #+#         #+#+# #+#+#  #+#           #+#
     #########  ##########   ###   ###   ##########    ###
 
+## Deprecated
+
+Dewey was written to interact with Google Docs, which has officially been
+deprecated in favor of Google Drive. I am no longer maintaining Dewey, and would
+recommend that anybody interested in interacting with Google Drive look into the
+official command line tools [GoogleCL](http://code.google.com/p/googlecl/).
 
 # Light, simple Google Docs library for Ruby.
 
 Dewey focuses on the simple cases of authorizing, searching, and managing the
 files on a Google Docs account. Really, it stemmed from the need to use Docs
 great document conversion services.
-
-## Note
-
-Dewey is written against the Google Document List Data API v3, which is prone
-to changes without warning. Because of this I recommend you be careful when
-using this in production.
 
 ## Authentication
 
